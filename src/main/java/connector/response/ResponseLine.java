@@ -1,5 +1,6 @@
 package connector.response;
 
+import enumeration.ResponseStatus;
 import logger.Logger;
 import util.HttpFormatUtil;
 
@@ -19,10 +20,10 @@ public class ResponseLine {
 
     private String statusDesc;
 
-    public ResponseLine(String protocal, int statusCode, String statusDesc) {
+    public ResponseLine(String protocal, ResponseStatus status) {
         this.protocal = protocal;
-        this.statusCode = statusCode;
-        this.statusDesc = statusDesc;
+        this.statusCode = status.getCode();
+        this.statusDesc = status.getDesc();
     }
 
     void write(BufferedWriter writer){
