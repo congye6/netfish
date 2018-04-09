@@ -1,5 +1,7 @@
 package prototype;
 
+import connector.request.HttpRequest;
+import connector.response.HttpResponse;
 import logger.Logger;
 
 import java.io.*;
@@ -18,38 +20,19 @@ public class ConnectionTask implements Runnable{
     }
 
     public void run() {
-        BufferedReader reader=null;
-        BufferedWriter writer=null;
-
         try {
-            reader=new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
-            writer=new BufferedWriter(new OutputStreamWriter(serverSocket.getOutputStream()));
+            HttpRequest request=new HttpRequest();
+            request.buildRequest(serverSocket.getInputStream());
 
-            StringBuilder contentBuilder=new StringBuilder();
-            while(true){
-                String line=reader.readLine();
-                Logger.info(line);
-                if(line==null||line.equals(""))
-                    break;
-                contentBuilder.append(line);
-            }
             String content="<html><head><title>HTTP响应示例</title></head><body>congye6</body></html>";
-            writer.write("HTTP/1.1 200 OK\r\n");
-            writer.write("Server:congye6 Server/0.0.1\r\n");
-            writer.write("Content-type:text/html;charset=UTF-8\r\n");
-            writer.write("Content-Length:"+content.length()+"\r\n");
-            writer.write("\r\n");
-            writer.write(content);
-            writer.flush();
+            HttpResponse response=new HttpResponse();
+            response.setResponseLine("HTTP/1.1",200,"OK");
+            response.addHeader("Content-Length",content.length()+"");
+            response.addHeader("Content-type","text/html;charset=UTF-8");
+            response.setBody(content);
+            response.write(serverSocket.getOutputStream());
         } catch (IOException e) {
             Logger.error("net io fail:"+e.getMessage());
-        }finally {
-            try {
-                reader.close();
-                writer.close();
-            } catch (IOException e) {
-                Logger.error("close connection fail");
-            }
         }
     }
 }
