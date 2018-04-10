@@ -1,7 +1,9 @@
 package connector.processor;
 
 import connector.request.HttpRequest;
+import connector.request.HttpRequestFacade;
 import connector.response.HttpResponse;
+import connector.response.HttpResponseFacade;
 import connector.response.ResponseLine;
 import enumeration.ResponseStatus;
 import util.HttpFormatUtil;
@@ -31,7 +33,7 @@ public class DynamicResourceProcessor implements Processor{
             String servletName=request.getURI().substring(index+1);
             Class servletClazz=classLoader.loadClass(servletName);
             Servlet servlet=(Servlet)servletClazz.newInstance();
-            servlet.service(request,response);
+            servlet.service(new HttpRequestFacade(request),new HttpResponseFacade(response));
             response.write();
         } catch (IOException e) {
             e.printStackTrace();
