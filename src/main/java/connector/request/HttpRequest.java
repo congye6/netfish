@@ -56,6 +56,10 @@ public class HttpRequest implements ServletRequest{
         return result;
     }
 
+    public String getURI(){
+        return requestLine.getPath();
+    }
+
     public Object getAttribute(String name) {
         return null;
     }

@@ -1,5 +1,8 @@
 package prototype;
 
+import connector.processor.DynamicResourceProcessor;
+import connector.processor.Processor;
+import connector.processor.StaticResourceProcessor;
 import connector.request.HttpRequest;
 import connector.response.HttpResponse;
 import logger.Logger;
@@ -24,14 +27,16 @@ public class ConnectionTask implements Runnable{
             HttpRequest request=new HttpRequest();
             request.buildRequest(serverSocket.getInputStream());
 
-            String content="<html><head><title>HTTP响应示例</title></head><body>congye6</body></html>";
-            HttpResponse response=new HttpResponse();
+            HttpResponse response=new HttpResponse(serverSocket.getOutputStream());
             response.setRequest(request);
-            response.addHeader("Server","congye6 Server/0.0.1");
-            response.addHeader("Content-Length",content.length()+"");
-            response.addHeader("Content-type","text/html;charset=UTF-8");
 
-            response.write(serverSocket.getOutputStream());
+            if(request.getURI().startsWith("/servlet/")){
+                Processor processor=new DynamicResourceProcessor();
+                processor.process(request,response);
+            }else{
+                Processor processor=new StaticResourceProcessor();
+                processor.process(request,response);
+            }
         } catch (IOException e) {
             Logger.error("net io fail:"+e.getMessage());
         }

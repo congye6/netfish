@@ -21,6 +21,11 @@ public class Logger {
         log(ERROR,message);
     }
 
+    public static void error(String message,Exception e){
+        log(ERROR,message+" e:"+e.getMessage());
+        e.printStackTrace();
+    }
+
     private static void log(String logLevel,String message){
         System.out.println(message);
         try {

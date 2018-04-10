@@ -23,23 +23,46 @@ public class HttpResponse implements ServletResponse{
     private ResponseHeader responseHeader=new ResponseHeader();
 
 
+    private OutputStream outputStream;
+
+    /**
+     * 将用户的输出缓存
+     */
+    private OutputBuffer buffer=new OutputBuffer();
 
 
-    public void addHeader(String key,String value){
+    public HttpResponse(OutputStream outputStream) {
+        this.outputStream = outputStream;
+    }
+
+    public void addHeader(String key, String value){
         responseHeader.addHeader(key,value);
     }
 
+    public void write(){
+        BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(outputStream));
+        responseLine.write(writer);
+        responseHeader.addHeader("Content-Length",buffer.size()+"");
+        responseHeader.write(writer);
+        try {
+            writer.write(HttpFormatUtil.LINE_SPLITER);
+            writer.flush();
+            buffer.writeTo(outputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-    public void write(OutputStream outputStream){
+    public void sendStaticResource(){
         BufferedWriter bufferedWriter=new BufferedWriter(new OutputStreamWriter(outputStream));
-
-        File file=new File(HttpFormatUtil.WEB_ROOT,"StringUtil.java");
+        String fileName=request.getURI();
+        File file=new File(HttpFormatUtil.WEB_ROOT,fileName);
         if(file.exists()){
             responseHeader.addHeader("Content-Length",file.length()+"");
             responseLine=new ResponseLine(HttpFormatUtil.HTTP_PROTOCAL,ResponseStatus.OK);
             responseLine.write(bufferedWriter);
             responseHeader.write(bufferedWriter);
-            
+
             try {
                 bufferedWriter.write(HttpFormatUtil.LINE_SPLITER);
                 FileReader reader=new FileReader(file);
@@ -67,6 +90,14 @@ public class HttpResponse implements ServletResponse{
         }
     }
 
+    public void setResponseLine(ResponseLine responseLine) {
+        this.responseLine = responseLine;
+    }
+
+    public void setOutputStream(OutputStream outputStream) {
+        this.outputStream = outputStream;
+    }
+
     public void setRequest(HttpRequest request) {
         this.request = request;
     }
@@ -84,7 +115,7 @@ public class HttpResponse implements ServletResponse{
     }
 
     public PrintWriter getWriter() throws IOException {
-        return null;
+        return new PrintWriter(buffer.getBufferStream(),true);
     }
 
     public void setCharacterEncoding(String charset) {
