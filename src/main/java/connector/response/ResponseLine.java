@@ -52,4 +52,16 @@ public class ResponseLine {
     public void setStatusDesc(String statusDesc) {
         this.statusDesc = statusDesc;
     }
+
+    public String getProtocal() {
+        return protocal;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public String getStatusDesc() {
+        return statusDesc;
+    }
 }

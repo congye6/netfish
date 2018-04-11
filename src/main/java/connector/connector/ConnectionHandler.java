@@ -1,4 +1,4 @@
-package prototype;
+package connector.connector;
 
 import java.net.Socket;
 import java.util.concurrent.Executor;

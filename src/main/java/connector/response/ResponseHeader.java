@@ -40,5 +40,9 @@ public class ResponseHeader {
         }
     }
 
+    public boolean containsHeader(String name){
+        return headerMap.containsKey(name);
+    }
+
 
 }

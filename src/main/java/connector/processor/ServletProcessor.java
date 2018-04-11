@@ -18,7 +18,7 @@ import java.net.URLClassLoader;
 /**
  * Created by cong on 2018-04-09.
  */
-public class DynamicResourceProcessor implements Processor{
+public class ServletProcessor implements Processor{
 
 
     public void process(HttpRequest request, HttpResponse response) {

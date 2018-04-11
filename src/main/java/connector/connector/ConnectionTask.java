@@ -1,6 +1,6 @@
-package prototype;
+package connector.connector;
 
-import connector.processor.DynamicResourceProcessor;
+import connector.processor.ServletProcessor;
 import connector.processor.Processor;
 import connector.processor.StaticResourceProcessor;
 import connector.request.HttpRequest;
@@ -9,7 +9,6 @@ import logger.Logger;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.ByteBuffer;
 
 /**
  * Created by cong on 2018-04-06.
@@ -31,7 +30,7 @@ public class ConnectionTask implements Runnable{
             response.setRequest(request);
 
             if(request.getURI().startsWith("/servlet/")){
-                Processor processor=new DynamicResourceProcessor();
+                Processor processor=new ServletProcessor();
                 processor.process(request,response);
             }else{
                 Processor processor=new StaticResourceProcessor();

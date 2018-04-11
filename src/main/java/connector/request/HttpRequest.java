@@ -4,7 +4,10 @@ import logger.Logger;
 import util.StringUtil;
 
 import javax.servlet.*;
+import javax.servlet.http.*;
 import java.io.*;
+import java.security.Principal;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
@@ -12,7 +15,7 @@ import java.util.Map;
 /**
  * Created by cong on 2018-04-08.
  */
-public class HttpRequest implements ServletRequest{
+public class HttpRequest implements HttpServletRequest {
 
     private static final String LINE_SPLITER="\r\n";
 
@@ -22,8 +25,10 @@ public class HttpRequest implements ServletRequest{
 
     private String body;
 
+    private InputStream inputStream;
 
     public void buildRequest(InputStream inputStream) {
+        this.inputStream=inputStream;
         BufferedReader reader=new BufferedReader(new InputStreamReader(inputStream));
         try {
             //请求行
@@ -69,7 +74,7 @@ public class HttpRequest implements ServletRequest{
     }
 
     public String getCharacterEncoding() {
-        return null;
+        return requestHeader.getHeader(RequestHeaderKey.ACCEPT_ENCODING);
     }
 
     public void setCharacterEncoding(String env) throws UnsupportedEncodingException {
@@ -77,15 +82,15 @@ public class HttpRequest implements ServletRequest{
     }
 
     public int getContentLength() {
-        return 0;
+        return Integer.parseInt(requestHeader.getHeader(RequestHeaderKey.CONTENT_LENGTH));
     }
 
     public long getContentLengthLong() {
-        return 0;
+        return getContentLength();
     }
 
     public String getContentType() {
-        return null;
+        return requestHeader.getHeader(RequestHeaderKey.CONTENT_TYPE);
     }
 
     public ServletInputStream getInputStream() throws IOException {
@@ -109,7 +114,7 @@ public class HttpRequest implements ServletRequest{
     }
 
     public String getProtocol() {
-        return null;
+        return requestLine.getProtocal();
     }
 
     public String getScheme() {
@@ -133,7 +138,7 @@ public class HttpRequest implements ServletRequest{
     }
 
     public String getRemoteHost() {
-        return null;
+        return requestHeader.getHeader(RequestHeaderKey.HOST);
     }
 
     public void setAttribute(String name, Object o) {
@@ -205,6 +210,134 @@ public class HttpRequest implements ServletRequest{
     }
 
     public DispatcherType getDispatcherType() {
+        return null;
+    }
+
+    public String getAuthType() {
+        return requestHeader.getHeader(RequestHeaderKey.AUTHORIZATION);
+    }
+
+    public Cookie[] getCookies() {
+        return new Cookie[0];
+    }
+
+    public long getDateHeader(String name) {
+        return 0;
+    }
+
+    public String getHeader(String name) {
+        return requestHeader.getHeader(name);
+    }
+
+    public Enumeration<String> getHeaders(String name) {
+        return null;
+    }
+
+    public Enumeration<String> getHeaderNames() {
+        return null;
+    }
+
+    public int getIntHeader(String name) {
+        return Integer.parseInt(requestHeader.getHeader(name));
+    }
+
+    public String getMethod() {
+        return requestLine.getMethod().name();
+    }
+
+    public String getPathInfo() {
+        return null;
+    }
+
+    public String getPathTranslated() {
+        return null;
+    }
+
+    public String getContextPath() {
+        return null;
+    }
+
+    public String getQueryString() {
+        return null;
+    }
+
+    public String getRemoteUser() {
+        return null;
+    }
+
+    public boolean isUserInRole(String role) {
+        return false;
+    }
+
+    public Principal getUserPrincipal() {
+        return null;
+    }
+
+    public String getRequestedSessionId() {
+        return null;
+    }
+
+    public String getRequestURI() {
+        return null;
+    }
+
+    public StringBuffer getRequestURL() {
+        return null;
+    }
+
+    public String getServletPath() {
+        return null;
+    }
+
+    public HttpSession getSession(boolean create) {
+        return null;
+    }
+
+    public HttpSession getSession() {
+        return null;
+    }
+
+    public String changeSessionId() {
+        return null;
+    }
+
+    public boolean isRequestedSessionIdValid() {
+        return false;
+    }
+
+    public boolean isRequestedSessionIdFromCookie() {
+        return false;
+    }
+
+    public boolean isRequestedSessionIdFromURL() {
+        return false;
+    }
+
+    public boolean isRequestedSessionIdFromUrl() {
+        return false;
+    }
+
+    public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
+        return false;
+    }
+
+    public void login(String username, String password) throws ServletException {
+
+    }
+
+    public void logout() throws ServletException {
+
+    }
+
+    public Collection<Part> getParts() throws IOException, ServletException {
+        return null;
+    }
+
+    public Part getPart(String name) throws IOException, ServletException {
+        return null;
+    }
+
+    public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass) throws IOException, ServletException {
         return null;
     }
 }

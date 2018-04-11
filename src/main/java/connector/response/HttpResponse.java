@@ -8,13 +8,16 @@ import util.StringUtil;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.Collection;
 import java.util.Locale;
 
 /**
  * Created by cong on 2018-04-09.
  */
-public class HttpResponse implements ServletResponse{
+public class HttpResponse implements HttpServletResponse {
 
     private HttpRequest request;
 
@@ -35,9 +38,7 @@ public class HttpResponse implements ServletResponse{
         this.outputStream = outputStream;
     }
 
-    public void addHeader(String key, String value){
-        responseHeader.addHeader(key,value);
-    }
+
 
     public void write(){
         BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(outputStream));
@@ -98,6 +99,91 @@ public class HttpResponse implements ServletResponse{
         this.outputStream = outputStream;
     }
 
+    public void addCookie(Cookie cookie) {
+
+    }
+
+    public boolean containsHeader(String name) {
+        return responseHeader.containsHeader(name);
+    }
+
+    public String encodeURL(String url) {
+        return null;
+    }
+
+    public String encodeRedirectURL(String url) {
+        return null;
+    }
+
+    public String encodeUrl(String url) {
+        return null;
+    }
+
+    public String encodeRedirectUrl(String url) {
+        return null;
+    }
+
+    public void sendError(int sc, String msg) throws IOException {
+
+    }
+
+    public void sendError(int sc) throws IOException {
+
+    }
+
+    public void sendRedirect(String location) throws IOException {
+
+    }
+
+    public void setDateHeader(String name, long date) {
+        responseHeader.addHeader(name,date+"");
+    }
+
+    public void addDateHeader(String name, long date) {
+        responseHeader.addHeader(name,date+"");
+    }
+
+    public void setHeader(String name, String value) {
+        responseHeader.addHeader(name,value);
+    }
+
+    public void addHeader(String key, String value){
+        responseHeader.addHeader(key,value);
+    }
+
+    public void setIntHeader(String name, int value) {
+        responseHeader.addHeader(name,value+"");
+    }
+
+    public void addIntHeader(String name, int value) {
+        responseHeader.addHeader(name,value+"");
+    }
+
+    public void setStatus(int sc) {
+        responseLine.setStatusCode(sc);
+    }
+
+    public void setStatus(int sc, String sm) {
+        responseLine.setStatusCode(sc);
+        responseLine.setStatusDesc(sm);
+    }
+
+    public int getStatus() {
+        return responseLine.;
+    }
+
+    public String getHeader(String name) {
+        return null;
+    }
+
+    public Collection<String> getHeaders(String name) {
+        return null;
+    }
+
+    public Collection<String> getHeaderNames() {
+        return null;
+    }
+
     public void setRequest(HttpRequest request) {
         this.request = request;
     }
@@ -119,19 +205,19 @@ public class HttpResponse implements ServletResponse{
     }
 
     public void setCharacterEncoding(String charset) {
-
+        responseHeader.addHeader(ResponseHeaderKey.CONTENT_ENCODING,charset);
     }
 
     public void setContentLength(int len) {
-
+        responseHeader.addHeader(ResponseHeaderKey.CONTENT_LENGTH,len+"");
     }
 
     public void setContentLengthLong(long len) {
-
+        responseHeader.addHeader(ResponseHeaderKey.CONTENT_LENGTH,len+"");
     }
 
     public void setContentType(String type) {
-
+        responseHeader.addHeader(ResponseHeaderKey.CONTENT_TYPE,type);
     }
 
     public void setBufferSize(int size) {

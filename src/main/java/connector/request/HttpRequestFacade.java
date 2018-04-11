@@ -1,9 +1,12 @@
 package connector.request;
 
 import javax.servlet.*;
+import javax.servlet.http.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.Principal;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
@@ -11,7 +14,7 @@ import java.util.Map;
 /**
  * Created by cong on 2018-04-10.
  */
-public class HttpRequestFacade implements ServletRequest{
+public class HttpRequestFacade implements HttpServletRequest {
 
     private HttpRequest request;
 
@@ -165,5 +168,133 @@ public class HttpRequestFacade implements ServletRequest{
 
     public DispatcherType getDispatcherType() {
         return request.getDispatcherType();
+    }
+
+    public String getAuthType() {
+        return request.getAuthType();
+    }
+
+    public Cookie[] getCookies() {
+        return request.getCookies();
+    }
+
+    public long getDateHeader(String name) {
+        return request.getDateHeader(name);
+    }
+
+    public String getHeader(String name) {
+        return request.getHeader(name);
+    }
+
+    public Enumeration<String> getHeaders(String name) {
+        return request.getHeaders(name);
+    }
+
+    public Enumeration<String> getHeaderNames() {
+        return request.getHeaderNames();
+    }
+
+    public int getIntHeader(String name) {
+        return request.getIntHeader(name);
+    }
+
+    public String getMethod() {
+        return request.getMethod();
+    }
+
+    public String getPathInfo() {
+        return request.getPathInfo();
+    }
+
+    public String getPathTranslated() {
+        return request.getPathTranslated();
+    }
+
+    public String getContextPath() {
+        return request.getContextPath();
+    }
+
+    public String getQueryString() {
+        return request.getQueryString();
+    }
+
+    public String getRemoteUser() {
+        return request.getRemoteUser();
+    }
+
+    public boolean isUserInRole(String role) {
+        return request.isUserInRole(role);
+    }
+
+    public Principal getUserPrincipal() {
+        return request.getUserPrincipal();
+    }
+
+    public String getRequestedSessionId() {
+        return request.getRequestedSessionId();
+    }
+
+    public String getRequestURI() {
+        return request.getRequestURI();
+    }
+
+    public StringBuffer getRequestURL() {
+        return request.getRequestURL();
+    }
+
+    public String getServletPath() {
+        return request.getServletPath();
+    }
+
+    public HttpSession getSession(boolean create) {
+        return request.getSession(create);
+    }
+
+    public HttpSession getSession() {
+        return request.getSession();
+    }
+
+    public String changeSessionId() {
+        return request.changeSessionId();
+    }
+
+    public boolean isRequestedSessionIdValid() {
+        return request.isRequestedSessionIdValid();
+    }
+
+    public boolean isRequestedSessionIdFromCookie() {
+        return request.isRequestedSessionIdFromCookie();
+    }
+
+    public boolean isRequestedSessionIdFromURL() {
+        return request.isRequestedSessionIdFromURL();
+    }
+
+    public boolean isRequestedSessionIdFromUrl() {
+        return request.isRequestedSessionIdFromUrl();
+    }
+
+    public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
+        return request.authenticate(response);
+    }
+
+    public void login(String username, String password) throws ServletException {
+        request.login(username,password);
+    }
+
+    public void logout() throws ServletException {
+        request.logout();
+    }
+
+    public Collection<Part> getParts() throws IOException, ServletException {
+        return request.getParts();
+    }
+
+    public Part getPart(String name) throws IOException, ServletException {
+        return request.getPart(name);
+    }
+
+    public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass) throws IOException, ServletException {
+        return request.upgrade(handlerClass);
     }
 }

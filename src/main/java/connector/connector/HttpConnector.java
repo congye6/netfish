@@ -1,4 +1,4 @@
-package prototype;
+package connector.connector;
 
 import logger.Logger;
 
@@ -9,7 +9,7 @@ import java.net.Socket;
 /**
  * Created by cong on 2018-04-06.
  */
-public class ServerSocketService {
+public class HttpConnector implements Runnable{
 
 
     private static final int PORT=8088;
@@ -20,7 +20,7 @@ public class ServerSocketService {
 
     private boolean isStop=false;
 
-    public void start(){
+    public void run(){
         try {
             if(serverSocket==null)
                 serverSocket=new ServerSocket(PORT);
@@ -47,7 +47,7 @@ public class ServerSocketService {
     }
 
     public static void main(String[] args){
-        new ServerSocketService().start();
+        new HttpConnector().run();
     }
 
 }
