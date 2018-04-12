@@ -1,5 +1,6 @@
 package connector.request;
 
+import connector.request.cookie.CookieParser;
 import logger.Logger;
 import util.StringUtil;
 
@@ -7,15 +8,14 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.*;
 import java.security.Principal;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by cong on 2018-04-08.
  */
 public class HttpRequest implements HttpServletRequest {
+
+    private static final String COOKIE_SESSION_ID="JSESSIONID";
 
     private static final String LINE_SPLITER="\r\n";
 
@@ -26,6 +26,15 @@ public class HttpRequest implements HttpServletRequest {
     private String body;
 
     private InputStream inputStream;
+
+    private List<Cookie> cookies;
+
+    private Map<String,String> parameterMap;
+
+    private boolean isRequestedSessionIdFromCookie=false;
+
+    private String requestedSessionId;
+
 
     public void buildRequest(InputStream inputStream) {
         this.inputStream=inputStream;
@@ -42,6 +51,10 @@ public class HttpRequest implements HttpServletRequest {
                 requestHeader.addHeader(headerLine);
             }
             requestHeader.initSpecialHead();
+            cookies= new CookieParser().parse(requestHeader.getHeader(RequestHeaderKey.COOKIE));
+            Cookie sessionId=getCookie(COOKIE_SESSION_ID);
+            if(sessionId!=null)
+                isRequestedSessionIdFromCookie=true;
             //body
             StringBuilder bodyBuilder=new StringBuilder();
             for(int i=0;i<requestHeader.getContentLength();i++){
@@ -218,7 +231,20 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public Cookie[] getCookies() {
-        return new Cookie[0];
+        return cookies.toArray(new Cookie[cookies.size()]);
+    }
+
+    /**
+     * 查询cookie
+     * @return
+     */
+    private Cookie getCookie(String name){
+        for(Cookie cookie:cookies){
+            if(cookie.getName().equals(name)){
+                return cookie;
+            }
+        }
+        return null;
     }
 
     public long getDateHeader(String name) {
@@ -274,7 +300,7 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public String getRequestedSessionId() {
-        return null;
+        return requestedSessionId;
     }
 
     public String getRequestURI() {
@@ -306,7 +332,7 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public boolean isRequestedSessionIdFromCookie() {
-        return false;
+        return isRequestedSessionIdFromCookie;
     }
 
     public boolean isRequestedSessionIdFromURL() {
@@ -340,4 +366,6 @@ public class HttpRequest implements HttpServletRequest {
     public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass) throws IOException, ServletException {
         return null;
     }
+
+
 }

@@ -1,4 +1,6 @@
 import javax.servlet.*;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
@@ -16,7 +18,10 @@ public class PrimitiveServlet implements Servlet{
     }
 
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
-        res.getWriter().println("hhhh");
+        Cookie[] cookies=((HttpServletRequest)req).getCookies();
+        for(Cookie cookie:cookies){
+            System.out.println(cookie.getName()+" "+cookie.getValue());
+        }
     }
 
     public String getServletInfo() {

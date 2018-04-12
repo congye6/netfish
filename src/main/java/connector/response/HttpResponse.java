@@ -169,7 +169,7 @@ public class HttpResponse implements HttpServletResponse {
     }
 
     public int getStatus() {
-        return responseLine.;
+        return responseLine.getStatusCode();
     }
 
     public String getHeader(String name) {

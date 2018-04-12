@@ -295,6 +295,8 @@ public class HttpRequestFacade implements HttpServletRequest {
     }
 
     public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass) throws IOException, ServletException {
-        return request.upgrade(handlerClass);
+        return null;
     }
+
+
 }
