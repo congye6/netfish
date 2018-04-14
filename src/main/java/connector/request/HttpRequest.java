@@ -2,6 +2,7 @@ package connector.request;
 
 import connector.request.cookie.CookieParser;
 import logger.Logger;
+import util.InputStreamUtil;
 import util.StringUtil;
 
 import javax.servlet.*;
@@ -25,7 +26,7 @@ public class HttpRequest implements HttpServletRequest {
 
     private String body;
 
-    private InputStream inputStream;
+    private SocketInputStream socketInputStream;
 
     private List<Cookie> cookies;
 
@@ -37,41 +38,31 @@ public class HttpRequest implements HttpServletRequest {
 
 
     public void buildRequest(InputStream inputStream) {
-        this.inputStream=inputStream;
-        BufferedReader reader=new BufferedReader(new InputStreamReader(inputStream));
-        try {
-            //请求行
-            String requestLine=reader.readLine();
-            this.requestLine=new RequestLine(requestLine);
-            //请求头
-            while(true){
-                String headerLine=reader.readLine();
-                if(StringUtil.isEmpty(headerLine))
-                    break;
-                requestHeader.addHeader(headerLine);
-            }
-            requestHeader.initSpecialHead();
-            cookies= new CookieParser().parse(requestHeader.getHeader(RequestHeaderKey.COOKIE));
-            Cookie sessionId=getCookie(COOKIE_SESSION_ID);
-            if(sessionId!=null)
-                isRequestedSessionIdFromCookie=true;
-            //body
-            StringBuilder bodyBuilder=new StringBuilder();
-            for(int i=0;i<requestHeader.getContentLength();i++){
-                int readChar=reader.read();
-                bodyBuilder.append((char)readChar);
-            }
-
-            body=bodyBuilder.toString();
-        } catch (IOException e) {
-            Logger.error("analyze request fail:"+e.getMessage());
+        this.socketInputStream=new SocketInputStream(inputStream);
+        this.requestLine=new RequestLine(socketInputStream.getRequestLine());
+        this.requestHeader=new RequestHeader();
+        for(String header:socketInputStream.getRequestHeaders()){
+            requestHeader.addHeader(header);
         }
+        cookies= new CookieParser().parse(requestHeader.getHeader(RequestHeaderKey.COOKIE));
+        Cookie sessionId=getCookie(COOKIE_SESSION_ID);
+        if(sessionId!=null){
+            isRequestedSessionIdFromCookie=true;
+            requestedSessionId=sessionId.getValue();
+        }
+
+        body=new String(socketInputStream.getBody(getContentLength()));
+        System.out.println(body);
     }
 
     @Override
     public String toString(){
         String result=requestLine.toString()+LINE_SPLITER+requestHeader.toString()+LINE_SPLITER+body;
         return result;
+    }
+
+    public String getBody(){
+        return body;
     }
 
     public String getURI(){
@@ -284,7 +275,7 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public String getQueryString() {
-        return null;
+        return requestLine.getQueryString();
     }
 
     public String getRemoteUser() {

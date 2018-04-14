@@ -24,6 +24,10 @@ public enum RequestMethod {
         METHOD_MAP.put(CONNECT.toString(),CONNECT);
     }
 
+    public boolean isMethod(String method){
+        return this.name().equalsIgnoreCase(method);
+    }
+
     public static RequestMethod getRequestMethod(String requestMethod){
         RequestMethod method=METHOD_MAP.get(requestMethod);
         if(method==null)

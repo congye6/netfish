@@ -15,11 +15,18 @@ public class RequestLine {
 
     private static final int INDEX_OF_PROTOCAL=2;
 
+    /**
+     * 将uri与参数分开
+     */
+    private static final String QUERY_STRING_SPLITER="?";
+
     private RequestMethod method;
 
     private String path;
 
     private String protocal;
+
+    private String queryString;
 
     public RequestLine(String requestLine){
         if(StringUtil.isEmpty(requestLine))
@@ -30,7 +37,22 @@ public class RequestLine {
 
         method=RequestMethod.getRequestMethod(params[INDEX_OF_METHOD]);
         path=params[INDEX_OF_PATH];
+        parseQueryString(path);
         protocal=params[INDEX_OF_PROTOCAL];
+    }
+
+    private void parseQueryString(String path){
+        if(!path.contains(QUERY_STRING_SPLITER))
+            return;
+        String[] strs=path.split(QUERY_STRING_SPLITER);
+        if(strs.length!=2)
+            return;
+        this.queryString=strs[1];
+        this.path=strs[0];
+    }
+
+    public String getQueryString(){
+        return queryString;
     }
 
     public RequestMethod getMethod() {
