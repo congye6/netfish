@@ -1,4 +1,4 @@
-package connector.request.cookie;
+package connector.cookie;
 
 import javax.servlet.http.Cookie;
 
@@ -16,4 +16,9 @@ public class ExpirePropertyParser implements CookiePropertyParser{
     public void setProperty(Cookie cookie, String value) {
         //cookie 不保存这个属性
     }
+
+    public void writeProperty(Cookie cookie, StringBuilder builder) {
+
+    }
+
 }

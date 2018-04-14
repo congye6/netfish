@@ -1,4 +1,4 @@
-package connector.request.cookie;
+package connector.cookie;
 
 import javax.servlet.http.Cookie;
 
@@ -17,5 +17,9 @@ public class MaxAgePropertyParser implements CookiePropertyParser{
         if(cookie!=null){
             cookie.setMaxAge(Integer.parseInt(value));
         }
+    }
+
+    public void writeProperty(Cookie cookie,StringBuilder builder) {
+        CookieParser.buildPair(MAX_AGE_NAME,cookie.getMaxAge()+"",builder);
     }
 }

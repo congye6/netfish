@@ -1,4 +1,4 @@
-package connector.request.cookie;
+package connector.cookie;
 
 import javax.servlet.http.Cookie;
 
@@ -20,5 +20,13 @@ public interface CookiePropertyParser {
      * @param cookie
      */
     public void setProperty(Cookie cookie,String value);
+
+    /**
+     * 读取cookie属性写入response
+     * 没有设置则不用写
+     * @param cookie
+     * @return
+     */
+    public void writeProperty(Cookie cookie,StringBuilder builder);
 
 }

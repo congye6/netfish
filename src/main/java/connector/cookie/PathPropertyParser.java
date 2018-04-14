@@ -1,4 +1,6 @@
-package connector.request.cookie;
+package connector.cookie;
+
+import util.StringUtil;
 
 import javax.servlet.http.Cookie;
 
@@ -17,5 +19,11 @@ public class PathPropertyParser implements CookiePropertyParser{
         if(cookie!=null){
             cookie.setPath(value);
         }
+    }
+
+    public void writeProperty(Cookie cookie,StringBuilder builder) {
+        if(StringUtil.isEmpty(cookie.getPath()))
+            return;
+        CookieParser.buildPair(PATH_NAME,cookie.getPath(),builder);
     }
 }

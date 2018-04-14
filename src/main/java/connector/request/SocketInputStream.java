@@ -1,10 +1,9 @@
 package connector.request;
 
-import connector.request.cookie.CookieParser;
+import connector.cookie.CookieParser;
 import logger.Logger;
 import util.StringUtil;
 
-import javax.servlet.http.Cookie;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package connector.request.cookie;
+package connector.cookie;
 
 import util.StringUtil;
 
@@ -18,9 +18,9 @@ public class CookieParser {
             new ExpirePropertyParser(),new MaxAgePropertyParser(),new PathPropertyParser(),new SecurePropertyParser()
     };
 
-    private static final String COOKIE_SPLITER=";";
+    static final String COOKIE_SPLITER=";";
 
-    private static final String COOKIE_VALUE_SPLITER="=";
+    static final String COOKIE_VALUE_SPLITER="=";
 
     private static final int INDEX_OF_NAME=0;
 
@@ -58,6 +58,24 @@ public class CookieParser {
             return null;
         Cookie cookie=new Cookie(values[INDEX_OF_NAME],values[INDEX_OF_VALUE]);
         return cookie;
+    }
+
+    public String parseCookie(List<Cookie> cookies){
+
+    }
+
+    private void parseCookie(Cookie cookie,StringBuilder builder){
+        buildPair(cookie.getName(),cookie.getValue(),builder);
+        for(CookiePropertyParser propertyParser:PROPERTY_PARSERS){//判断是否为cookie的属性
+            propertyParser.writeProperty(cookie,builder);
+        }
+    }
+
+    static void buildPair(String name,String value,StringBuilder builder){
+        builder.append(name);
+        builder.append(COOKIE_VALUE_SPLITER);
+        builder.append(value);
+        builder.append(COOKIE_SPLITER);
     }
 
     public static void main(String[] args){

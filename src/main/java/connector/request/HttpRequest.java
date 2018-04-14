@@ -1,9 +1,6 @@
 package connector.request;
 
-import connector.request.cookie.CookieParser;
-import logger.Logger;
-import util.InputStreamUtil;
-import util.StringUtil;
+import connector.cookie.CookieParser;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -30,7 +27,7 @@ public class HttpRequest implements HttpServletRequest {
 
     private List<Cookie> cookies;
 
-    private Map<String,String> parameterMap;
+    private ParameterMap parameterMap;
 
     private boolean isRequestedSessionIdFromCookie=false;
 
@@ -52,7 +49,7 @@ public class HttpRequest implements HttpServletRequest {
         }
 
         body=new String(socketInputStream.getBody(getContentLength()));
-        System.out.println(body);
+        parameterMap=new ParameterMap(this);
     }
 
     @Override
@@ -102,7 +99,7 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public String getParameter(String name) {
-        return null;
+        return parameterMap.getParam(name);
     }
 
     public Enumeration<String> getParameterNames() {

@@ -1,4 +1,4 @@
-package connector.request.cookie;
+package connector.cookie;
 
 import javax.servlet.http.Cookie;
 
@@ -18,4 +18,10 @@ public class SecurePropertyParser implements CookiePropertyParser{
             cookie.setSecure(Boolean.parseBoolean(value));
         }
     }
+
+    public void writeProperty(Cookie cookie,StringBuilder builder) {
+        CookieParser.buildPair(SECURE_NAME,cookie.getSecure()+"",builder);
+    }
+
+
 }

@@ -4,6 +4,7 @@ import logger.Logger;
 import util.HttpFormatUtil;
 import util.StringUtil;
 
+import javax.servlet.http.Cookie;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -40,9 +41,17 @@ public class ResponseHeader {
         }
     }
 
+    String getHeader(String name){
+        return headerMap.get(name);
+    }
+
     public boolean containsHeader(String name){
         return headerMap.containsKey(name);
     }
 
 
+    public void addCookie(List<Cookie> cookies) {
+
+
+    }
 }

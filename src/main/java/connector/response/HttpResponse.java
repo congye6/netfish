@@ -11,7 +11,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -27,6 +29,8 @@ public class HttpResponse implements HttpServletResponse {
 
 
     private OutputStream outputStream;
+
+    private List<Cookie> cookies=new ArrayList<Cookie>();
 
     /**
      * 将用户的输出缓存
@@ -44,6 +48,7 @@ public class HttpResponse implements HttpServletResponse {
         BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(outputStream));
         responseLine.write(writer);
         responseHeader.addHeader("Content-Length",buffer.size()+"");
+        responseHeader.addCookie(ResponseHeaderKey.SET_COOKIE);
         responseHeader.write(writer);
         try {
             writer.write(HttpFormatUtil.LINE_SPLITER);
@@ -100,7 +105,9 @@ public class HttpResponse implements HttpServletResponse {
     }
 
     public void addCookie(Cookie cookie) {
-
+        if(cookie==null)
+            return;
+        cookies.add(cookie);
     }
 
     public boolean containsHeader(String name) {
@@ -173,7 +180,7 @@ public class HttpResponse implements HttpServletResponse {
     }
 
     public String getHeader(String name) {
-        return null;
+        return responseHeader.getHeader(name);
     }
 
     public Collection<String> getHeaders(String name) {

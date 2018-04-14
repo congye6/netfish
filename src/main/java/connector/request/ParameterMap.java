@@ -26,6 +26,7 @@ public class ParameterMap {
 
     public ParameterMap(HttpRequest request){
         encode=Encode.getEncode(request.getCharacterEncoding());
+        parameterMap=new HashMap<String, String>();
 
         String queryString=request.getQueryString();
         if(StringUtil.isNotEmpty(queryString)){
@@ -36,6 +37,10 @@ public class ParameterMap {
             parse(request.getBody());
         }
 
+    }
+
+    public String getParam(String key){
+        return parameterMap.get(key);
     }
 
     private void parse(String str){
