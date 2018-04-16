@@ -25,6 +25,10 @@ public enum Encode {
 
     private String code;
 
+    public static Encode getDefault(){
+        return UTF8;
+    }
+
     public String getCode() {
         return code;
     }
@@ -32,7 +36,7 @@ public enum Encode {
     public static Encode getEncode(String code){
         Encode encode=ENCODE_MAP.get(code);
         if(encode==null)
-            return UTF8;
+            return getDefault();
         return encode;
     }
 

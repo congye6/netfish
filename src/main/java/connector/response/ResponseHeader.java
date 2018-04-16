@@ -1,5 +1,6 @@
 package connector.response;
 
+import connector.cookie.CookieParser;
 import logger.Logger;
 import util.HttpFormatUtil;
 import util.StringUtil;
@@ -51,7 +52,12 @@ public class ResponseHeader {
 
 
     public void addCookie(List<Cookie> cookies) {
-
-
+        if(cookies==null||cookies.size()==0)
+            return;
+        CookieParser cookieParser=new CookieParser();
+        String cookieStr=cookieParser.parseCookie(cookies);
+        if(StringUtil.isEmpty(cookieStr))
+            return;
+        headerMap.put(ResponseHeaderKey.SET_COOKIE,cookieStr);
     }
 }

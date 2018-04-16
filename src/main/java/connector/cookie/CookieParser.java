@@ -26,6 +26,11 @@ public class CookieParser {
 
     private static final int INDEX_OF_VALUE=1;
 
+    /**
+     * 将字符串解析成cookie
+     * @param cookieStr
+     * @return
+     */
     public List<Cookie> parse(String cookieStr){
         if(StringUtil.isEmpty(cookieStr))
             return new ArrayList<Cookie>();
@@ -60,8 +65,17 @@ public class CookieParser {
         return cookie;
     }
 
+    /**
+     * 将cookie解析成字符串
+     * @param cookies
+     * @return
+     */
     public String parseCookie(List<Cookie> cookies){
-
+        StringBuilder builder=new StringBuilder();
+        for(Cookie cookie:cookies){
+            parseCookie(cookie,builder);
+        }
+        return builder.toString();
     }
 
     private void parseCookie(Cookie cookie,StringBuilder builder){

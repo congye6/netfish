@@ -1,6 +1,7 @@
 package connector.response;
 
 import connector.request.HttpRequest;
+import enumeration.Encode;
 import enumeration.ResponseStatus;
 import logger.Logger;
 import util.HttpFormatUtil;
@@ -47,8 +48,8 @@ public class HttpResponse implements HttpServletResponse {
     public void write(){
         BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(outputStream));
         responseLine.write(writer);
-        responseHeader.addHeader("Content-Length",buffer.size()+"");
-        responseHeader.addCookie(ResponseHeaderKey.SET_COOKIE);
+        responseHeader.addHeader(ResponseHeaderKey.CONTENT_LENGTH,buffer.size()+"");
+        responseHeader.addCookie(cookies);
         responseHeader.write(writer);
         try {
             writer.write(HttpFormatUtil.LINE_SPLITER);
@@ -196,11 +197,14 @@ public class HttpResponse implements HttpServletResponse {
     }
 
     public String getCharacterEncoding() {
-        return null;
+        String encode=responseHeader.getHeader(ResponseHeaderKey.CONTENT_ENCODING);
+        if(encode==null)
+            encode= Encode.getDefault().name();
+        return encode;
     }
 
     public String getContentType() {
-        return null;
+        return responseHeader.getHeader(ResponseHeaderKey.CONTENT_TYPE);
     }
 
     public ServletOutputStream getOutputStream() throws IOException {
