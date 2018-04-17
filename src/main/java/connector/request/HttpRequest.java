@@ -1,6 +1,7 @@
 package connector.request;
 
 import connector.cookie.CookieParser;
+import util.StringUtil;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -83,7 +84,10 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public int getContentLength() {
-        return Integer.parseInt(requestHeader.getHeader(RequestHeaderKey.CONTENT_LENGTH));
+        String length=requestHeader.getHeader(RequestHeaderKey.CONTENT_LENGTH);
+        if(StringUtil.isEmpty(length))
+            return 0;
+        return Integer.parseInt(length);
     }
 
     public long getContentLengthLong() {

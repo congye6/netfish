@@ -4,6 +4,7 @@ import connector.request.HttpRequest;
 import connector.response.HttpResponse;
 import logger.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ public class StandardValveContext implements ValveContext{
 
     private Valve basic;
 
-    private List<Valve> valves;
+    private List<Valve> valves=new ArrayList<Valve>();
 
     /**
      * 指向当前要运行的过滤器
@@ -37,7 +38,7 @@ public class StandardValveContext implements ValveContext{
     }
 
     public List<Valve> getValves() {
-        return valves;
+        return new ArrayList<Valve>(valves);
     }
 
     public void setBasicValve(Valve basic) {

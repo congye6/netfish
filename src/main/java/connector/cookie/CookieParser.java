@@ -1,5 +1,6 @@
 package connector.cookie;
 
+import logger.Logger;
 import util.StringUtil;
 
 
@@ -15,7 +16,7 @@ import java.util.List;
 public class CookieParser {
 
     private static final CookiePropertyParser[] PROPERTY_PARSERS={
-            new ExpirePropertyParser(),new MaxAgePropertyParser(),new PathPropertyParser(),new SecurePropertyParser()
+            new ExpirePropertyParser(),new MaxAgePropertyParser(),new PathPropertyParser()
     };
 
     static final String COOKIE_SPLITER=";";
@@ -49,9 +50,14 @@ public class CookieParser {
                 }
             }
             //不是cookie的属性，创建新cookie
-            Cookie newCookie=new Cookie(values[INDEX_OF_NAME],values[INDEX_OF_VALUE]);
-            cookies.add(newCookie);
-            cookie=newCookie;
+            try{
+                Cookie newCookie=new Cookie(values[INDEX_OF_NAME],values[INDEX_OF_VALUE]);
+                cookies.add(newCookie);
+                cookie=newCookie;
+            }catch (Exception e){
+                Logger.error("create cookie fail",e);
+            }
+
         }
 
         return cookies;

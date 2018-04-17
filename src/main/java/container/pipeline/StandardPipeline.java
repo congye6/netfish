@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class StandardPipeline implements Pipeline{
 
-    private ValveContext valveContext;
+    private ValveContext valveContext=new StandardValveContext();
 
     public void invoke(HttpRequest request, HttpResponse response) {
         valveContext.invokeNext(request,response);

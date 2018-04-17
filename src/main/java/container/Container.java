@@ -2,6 +2,7 @@ package container;
 
 import connector.request.HttpRequest;
 import connector.response.HttpResponse;
+import container.loader.Loader;
 
 /**
  * Created by cong on 2018-04-16.
@@ -19,6 +20,10 @@ public interface Container {
     public void removeChild(Container child);
     public Container findChild(String name);
     public Container[] findChildren();
+
+    //loader
+    public void setLoader(Loader loader);
+    public Loader getLoader();
 
 
 

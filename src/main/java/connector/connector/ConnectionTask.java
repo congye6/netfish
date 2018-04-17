@@ -5,7 +5,15 @@ import connector.processor.Processor;
 import connector.processor.StaticResourceProcessor;
 import connector.request.HttpRequest;
 import connector.response.HttpResponse;
+import connector.response.ResponseLine;
+import container.Container;
+import container.context.Context;
+import container.context.ContextMapper;
+import container.context.StandardContext;
+import container.wrapper.StandardWrapper;
+import enumeration.ResponseStatus;
 import logger.Logger;
+import util.HttpFormatUtil;
 
 import java.io.*;
 import java.net.Socket;
@@ -30,8 +38,14 @@ public class ConnectionTask implements Runnable{
             response.setRequest(request);
 
             if(request.getURI().startsWith("/servlet/")){
-                Processor processor=new ServletProcessor();
-                processor.process(request,response);
+                Context context=new StandardContext();
+                context.addServletMapping("/servlet/CookieServlet",new StandardWrapper("/servlet/CookieServlet"));
+                ContextMapper mapper=new ContextMapper();
+                mapper.setContainer(context);
+                context.setMapper(mapper);
+                context.invoke(request,response);
+                response.setResponseLine(new ResponseLine(HttpFormatUtil.HTTP_PROTOCAL, ResponseStatus.OK));
+                response.write();
             }else{
                 Processor processor=new StaticResourceProcessor();
                 processor.process(request,response);
