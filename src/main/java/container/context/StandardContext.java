@@ -4,6 +4,9 @@ import connector.request.HttpRequest;
 import connector.response.HttpResponse;
 import container.Container;
 import container.Mapper;
+import container.lifecycle.LifeCycle;
+import container.lifecycle.LifeCycleListener;
+import container.lifecycle.LifeCycleUtil;
 import container.loader.Loader;
 import container.pipeline.Pipeline;
 import container.pipeline.StandardPipeline;
@@ -14,7 +17,7 @@ import java.util.*;
 /**
  * Created by cong on 2018-04-17.
  */
-public class StandardContext implements Context{
+public class StandardContext implements Context,LifeCycle{
 
     private Container parent;
 
@@ -24,9 +27,12 @@ public class StandardContext implements Context{
 
     private Map<String,Wrapper> servletMapping=new HashMap<String,Wrapper>();
 
+    private LifeCycleUtil lifeCycle;
+
     public StandardContext(){
         pipeline=new StandardPipeline();
         pipeline.setBasic(new ContextBasicValve(this));
+        lifeCycle=new LifeCycleUtil(this);
     }
 
     public void invoke(HttpRequest request, HttpResponse response) {
@@ -87,5 +93,25 @@ public class StandardContext implements Context{
 
     public Mapper getMapper() {
         return mapper;
+    }
+
+    public void addLifeCycleListener(LifeCycleListener listener) {
+        lifeCycle.addListener(listener);
+    }
+
+    public List<LifeCycleListener> getLifeCycleListeners() {
+        return lifeCycle.getListeners();
+    }
+
+    public void removeLifeCycleListener(LifeCycleListener listener) {
+        lifeCycle.removeListener(listener);
+    }
+
+    public void start() {
+        lifeCycle.start(null);
+    }
+
+    public void stop() {
+        lifeCycle.stop(null);
     }
 }
