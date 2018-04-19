@@ -1,7 +1,6 @@
 package connector.request;
 
-import connector.cookie.CookieParser;
-import logger.Logger;
+import logger.StandardLogger;
 import util.StringUtil;
 
 import java.io.BufferedReader;
@@ -40,7 +39,7 @@ public class SocketInputStream {
 
 
         } catch (IOException e) {
-            Logger.error("analyze request fail:"+e.getMessage());
+            StandardLogger.error("analyze request fail:"+e.getMessage());
         }
     }
 
@@ -58,7 +57,7 @@ public class SocketInputStream {
         try {
             reader.read(body,0,length);
         } catch (IOException e) {
-            Logger.error("read body fail",e);
+            StandardLogger.error("read body fail",e);
         }
         return body;
     }

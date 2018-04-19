@@ -1,13 +1,11 @@
 package connector.response;
 
 import enumeration.ResponseStatus;
-import logger.Logger;
+import logger.StandardLogger;
 import util.HttpFormatUtil;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 
 /**
  * Created by cong on 2018-04-09.
@@ -37,7 +35,7 @@ public class ResponseLine {
             builder.append(HttpFormatUtil.LINE_SPLITER);
             writer.write(builder.toString());
         } catch (IOException e) {
-            Logger.error("write response fail:"+e.getMessage());
+            StandardLogger.error("write response fail:"+e.getMessage());
         }
     }
 

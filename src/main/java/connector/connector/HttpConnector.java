@@ -1,6 +1,6 @@
 package connector.connector;
 
-import logger.Logger;
+import logger.StandardLogger;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -24,7 +24,7 @@ public class HttpConnector implements Runnable{
         try {
             if(serverSocket==null)
                 serverSocket=new ServerSocket(PORT);
-            Logger.info("create server socker,port:"+PORT);
+            StandardLogger.info("create server socker,port:"+PORT);
 
             while(!isStop){
                 Socket socket=serverSocket.accept();
@@ -32,16 +32,16 @@ public class HttpConnector implements Runnable{
             }
 
         } catch (IOException e) {
-            Logger.error(e.getMessage());
+            StandardLogger.error(e.getMessage());
         }finally {
             if(serverSocket!=null){
                 try {
                     serverSocket.close();
                 } catch (IOException e) {
-                    Logger.error("close server socket fail");
+                    StandardLogger.error("close server socket fail");
                 }
                 serverSocket=null;
-                Logger.info("server socket is closed");
+                StandardLogger.info("server socket is closed");
             }
         }
     }

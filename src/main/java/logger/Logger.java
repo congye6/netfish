@@ -1,42 +1,30 @@
 package logger;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import container.Container;
+import enumeration.LogLevel;
 
 /**
- * Created by cong on 2018-03-08.
+ * Created by cong on 2018-04-19.
  */
-public class Logger {
+public interface Logger {
 
-    private static final String INFO="info ";
 
-    private static final String ERROR="error ";
+    public Container getContainer();
 
-    public static void info(String message){
-        log(INFO,message);
-    }
+    public void setContainer(Container container);
 
-    public static void error(String message){
-        log(ERROR,message);
-    }
+    public String getInfo();
 
-    public static void error(String message,Exception e){
-        log(ERROR,message+" e:"+e.getMessage());
-        e.printStackTrace();
-    }
+    public LogLevel getLevel();
 
-    private static void log(String logLevel,String message){
-        System.out.println(message);
-        try {
-            BufferedWriter bufferedWriter=new BufferedWriter(new FileWriter("log",true));
-            bufferedWriter.append('\n');
-            bufferedWriter.append(logLevel);
-            bufferedWriter.append(message);
-            bufferedWriter.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    public void setLevel(LogLevel level);
+
+    public void log(String message);
+
+    public void log(String message,Exception e);
+
+    public void log(String message,LogLevel logLevel);
+
+    public void log(String message,LogLevel logLevel,Exception e);
 
 }

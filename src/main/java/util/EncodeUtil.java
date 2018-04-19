@@ -1,7 +1,7 @@
 package util;
 
 import enumeration.Encode;
-import logger.Logger;
+import logger.StandardLogger;
 
 import java.io.UnsupportedEncodingException;
 
@@ -22,7 +22,7 @@ public class EncodeUtil {
         try {
             return new String(source.getBytes(encode.getCode()),encode.getCode());
         } catch (UnsupportedEncodingException e) {
-            Logger.error("encode str:"+source+" fail,encode:"+encode.getCode(),e);
+            StandardLogger.error("encode str:"+source+" fail,encode:"+encode.getCode(),e);
         }
         return source;
     }

@@ -1,6 +1,6 @@
 package connector.cookie;
 
-import logger.Logger;
+import logger.StandardLogger;
 import util.StringUtil;
 
 
@@ -55,7 +55,7 @@ public class CookieParser {
                 cookies.add(newCookie);
                 cookie=newCookie;
             }catch (Exception e){
-                Logger.error("create cookie fail",e);
+                StandardLogger.error("create cookie fail",e);
             }
 
         }

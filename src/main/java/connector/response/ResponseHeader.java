@@ -1,15 +1,13 @@
 package connector.response;
 
 import connector.cookie.CookieParser;
-import logger.Logger;
+import logger.StandardLogger;
 import util.HttpFormatUtil;
 import util.StringUtil;
 
 import javax.servlet.http.Cookie;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.*;
 
 /**
@@ -38,7 +36,7 @@ public class ResponseHeader {
         try {
             bufferedWriter.write(builder.toString());
         } catch (IOException e) {
-            Logger.error("write header fail,e:"+e.getMessage());
+            StandardLogger.error("write header fail,e:"+e.getMessage());
         }
     }
 

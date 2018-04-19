@@ -1,6 +1,6 @@
 package connector.response;
 
-import logger.Logger;
+import logger.StandardLogger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,7 +23,7 @@ public class OutputBuffer {
         try {
             bufferStream.writeTo(outputStream);
         } catch (IOException e) {
-            Logger.error("write buffer to response fail",e);
+            StandardLogger.error("write buffer to response fail",e);
         }
     }
 

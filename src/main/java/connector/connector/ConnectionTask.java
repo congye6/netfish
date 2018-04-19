@@ -1,18 +1,16 @@
 package connector.connector;
 
-import connector.processor.ServletProcessor;
 import connector.processor.Processor;
 import connector.processor.StaticResourceProcessor;
 import connector.request.HttpRequest;
 import connector.response.HttpResponse;
 import connector.response.ResponseLine;
-import container.Container;
 import container.context.Context;
 import container.context.ContextMapper;
 import container.context.StandardContext;
 import container.wrapper.StandardWrapper;
 import enumeration.ResponseStatus;
-import logger.Logger;
+import logger.StandardLogger;
 import util.HttpFormatUtil;
 
 import java.io.*;
@@ -51,7 +49,7 @@ public class ConnectionTask implements Runnable{
                 processor.process(request,response);
             }
         } catch (IOException e) {
-            Logger.error("net io fail:"+e.getMessage());
+            StandardLogger.error("net io fail:"+e.getMessage());
         }
     }
 }

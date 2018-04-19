@@ -2,13 +2,10 @@ package connector.request;
 
 import enumeration.ContentType;
 import enumeration.Encode;
-import logger.Logger;
 import util.EncodeUtil;
-import util.InputStreamUtil;
 import util.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.*;
 
 /**

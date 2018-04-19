@@ -2,7 +2,7 @@ package container.pipeline;
 
 import connector.request.HttpRequest;
 import connector.response.HttpResponse;
-import logger.Logger;
+import logger.StandardLogger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class StandardValveContext implements ValveContext{
         }else if(pointer==valves.size()&&basic!=null){
             basic.invoke(request,response,this);
         }else{
-            Logger.error("invoke valve out of bound,index:"+pointer);
+            StandardLogger.error("invoke valve out of bound,index:"+pointer);
         }
     }
 

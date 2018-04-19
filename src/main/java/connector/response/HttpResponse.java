@@ -3,12 +3,10 @@ package connector.response;
 import connector.request.HttpRequest;
 import enumeration.Encode;
 import enumeration.ResponseStatus;
-import logger.Logger;
+import logger.StandardLogger;
 import util.HttpFormatUtil;
-import util.StringUtil;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -78,7 +76,7 @@ public class HttpResponse implements HttpServletResponse {
                 bufferedWriter.write(bytes);
                 bufferedWriter.flush();
             } catch (IOException e) {
-                Logger.error(e.getMessage());
+                StandardLogger.error(e.getMessage());
             }
         }else{
             ResponseLine responseLine=new ResponseLine(HttpFormatUtil.HTTP_PROTOCAL, ResponseStatus.NOT_FOUND);
@@ -92,7 +90,7 @@ public class HttpResponse implements HttpServletResponse {
                 bufferedWriter.write(body);
                 bufferedWriter.flush();
             } catch (IOException e) {
-                Logger.error("not found page error,e:"+e.getMessage());
+                StandardLogger.error("not found page error,e:"+e.getMessage());
             }
         }
     }
