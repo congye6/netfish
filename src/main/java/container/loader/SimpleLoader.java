@@ -1,5 +1,6 @@
 package container.loader;
 
+import container.Container;
 import container.lifecycle.LifeCycle;
 import container.lifecycle.LifeCycleException;
 import container.lifecycle.LifeCycleListener;
@@ -66,5 +67,45 @@ public class SimpleLoader implements Loader,LifeCycle{
 
     public void stop() throws LifeCycleException {
         System.out.println("loader end");
+    }
+
+    public ClassLoader getClassLoader() {
+        return null;
+    }
+
+    public Container getContainer() {
+        return null;
+    }
+
+    public void setContainer(Container container) {
+
+    }
+
+    public boolean reloadable() {
+        return false;
+    }
+
+    public void setReloadable(boolean reloadable) {
+
+    }
+
+    public void addRepository(String repository) {
+
+    }
+
+    public List<String> getRepositories() {
+        return null;
+    }
+
+    public boolean modified() {
+        return false;
+    }
+
+    public boolean getDelegate() {
+        return false;
+    }
+
+    public void setDelegate(boolean delegate) {
+
     }
 }

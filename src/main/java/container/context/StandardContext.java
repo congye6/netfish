@@ -43,6 +43,8 @@ public class StandardContext implements Context,LifeCycle{
 
     private Loader loader;
 
+    private ClassLoader parentClassLoader;
+
     public StandardContext(){
         pipeline=new StandardPipeline();
         pipeline.setBasic(new ContextBasicValve(this));
@@ -71,11 +73,11 @@ public class StandardContext implements Context,LifeCycle{
     }
 
     public ClassLoader getParentClassLoader() {
-        return null;
+        return parentClassLoader;
     }
 
     public void setParentClassLoader(ClassLoader parent) {
-
+        this.parentClassLoader=parent;
     }
 
     public void addChild(Container child) {
