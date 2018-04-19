@@ -13,9 +13,9 @@ public interface LifeCycle {
 
     public void removeLifeCycleListener(LifeCycleListener listener);
 
-    public void start();
+    public void start() throws LifeCycleException;
 
-    public void stop();
+    public void stop() throws LifeCycleException;
 
 
 }

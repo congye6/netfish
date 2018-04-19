@@ -1,5 +1,9 @@
 package container.loader;
 
+import container.lifecycle.LifeCycle;
+import container.lifecycle.LifeCycleException;
+import container.lifecycle.LifeCycleListener;
+import container.lifecycle.LifeCycleUtil;
 import util.HttpFormatUtil;
 
 import javax.servlet.Servlet;
@@ -8,11 +12,14 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.List;
 
 /**
  * Created by cong on 2018-04-16.
  */
-public class SimpleLoader implements Loader{
+public class SimpleLoader implements Loader,LifeCycle{
+
+    private LifeCycleUtil lifeCycle=new LifeCycleUtil(this);
 
     public Servlet load(String uri)  {
         File classPath=new File(HttpFormatUtil.WEB_ROOT);
@@ -41,4 +48,23 @@ public class SimpleLoader implements Loader{
     }
 
 
+    public void addLifeCycleListener(LifeCycleListener listener) {
+        lifeCycle.addListener(listener);
+    }
+
+    public List<LifeCycleListener> getLifeCycleListeners() {
+        return lifeCycle.getListeners();
+    }
+
+    public void removeLifeCycleListener(LifeCycleListener listener) {
+        lifeCycle.removeListener(listener);
+    }
+
+    public void start() throws LifeCycleException {
+        System.out.println("loader start");
+    }
+
+    public void stop() throws LifeCycleException {
+        System.out.println("loader end");
+    }
 }

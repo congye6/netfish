@@ -3,17 +3,23 @@ package container.wrapper;
 import connector.request.HttpRequest;
 import connector.response.HttpResponse;
 import container.Container;
+import container.lifecycle.LifeCycle;
+import container.lifecycle.LifeCycleException;
+import container.lifecycle.LifeCycleListener;
+import container.lifecycle.LifeCycleUtil;
 import container.loader.Loader;
 import container.loader.SimpleLoader;
 import container.pipeline.Pipeline;
 import container.pipeline.StandardPipeline;
 
 import javax.servlet.Servlet;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by cong on 2018-04-16.
  */
-public class StandardWrapper implements Wrapper{
+public class StandardWrapper implements Wrapper,LifeCycle{
 
     private Pipeline pipeline;
 
@@ -23,12 +29,17 @@ public class StandardWrapper implements Wrapper{
 
     private String uri;
 
+    private LifeCycleUtil lifeCycle=new LifeCycleUtil(this);
+
     public StandardWrapper(String uri) {
         pipeline=new StandardPipeline();
         pipeline.setBasic(new WrapperBasicValve(this));
         pipeline.addValve(new HeaderValve());
         this.loader=new SimpleLoader();
         this.uri=uri;
+
+        //todo
+        addLifeCycleListener(new StandardWrapperListener());
     }
 
 
@@ -64,8 +75,8 @@ public class StandardWrapper implements Wrapper{
         return null;
     }
 
-    public Container[] findChildren() {
-        return new Container[0];
+    public List<Container> findChildren() {
+        return new ArrayList<Container>();
     }
 
     public void setLoader(Loader loader) {
@@ -86,5 +97,29 @@ public class StandardWrapper implements Wrapper{
 
     public Servlet allocate() {
         return ((SimpleLoader)loader).load(uri);
+    }
+
+    public void addLifeCycleListener(LifeCycleListener listener) {
+        lifeCycle.addListener(listener);
+    }
+
+    public List<LifeCycleListener> getLifeCycleListeners() {
+        return lifeCycle.getListeners();
+    }
+
+    public void removeLifeCycleListener(LifeCycleListener listener) {
+        lifeCycle.removeListener(listener);
+    }
+
+    public void start() throws LifeCycleException {
+        lifeCycle.beforeStart(null);
+        lifeCycle.start(null);
+        lifeCycle.afterStart(null);
+    }
+
+    public void stop() throws LifeCycleException {
+        lifeCycle.beforeStop(null);
+        lifeCycle.stop(null);
+        lifeCycle.afterStop(null);
     }
 }
