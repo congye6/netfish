@@ -28,4 +28,6 @@ public interface Loader {
     public boolean getDelegate();
 
     public void setDelegate(boolean delegate);
+
+    public Class load(String url);
 }

@@ -11,6 +11,7 @@ import container.loader.Loader;
 import container.loader.SimpleLoader;
 import container.pipeline.Pipeline;
 import container.pipeline.StandardPipeline;
+import logger.StandardLogger;
 
 import javax.servlet.Servlet;
 import java.util.ArrayList;
@@ -35,7 +36,6 @@ public class StandardWrapper implements Wrapper,LifeCycle{
         pipeline=new StandardPipeline();
         pipeline.setBasic(new WrapperBasicValve(this));
         pipeline.addValve(new HeaderValve());
-        this.loader=new SimpleLoader();
         this.uri=uri;
 
         //todo
@@ -96,7 +96,13 @@ public class StandardWrapper implements Wrapper,LifeCycle{
     }
 
     public Servlet allocate() {
-        return ((SimpleLoader)loader).load(uri);
+        Class clazz=getLoader().load(uri);
+        try {
+            return (Servlet)clazz.newInstance();
+        } catch (Exception e) {
+            StandardLogger.error("get class of:"+uri,e);
+        }
+        return null;
     }
 
     public void addLifeCycleListener(LifeCycleListener listener) {

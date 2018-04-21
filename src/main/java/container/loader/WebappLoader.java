@@ -1,11 +1,15 @@
 package container.loader;
 
 import container.Container;
+import container.context.StandardContext;
 import container.lifecycle.LifeCycle;
 import container.lifecycle.LifeCycleException;
 import container.lifecycle.LifeCycleListener;
 import container.lifecycle.LifeCycleUtil;
+import logger.Logger;
+import logger.StandardLogger;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +19,11 @@ import java.util.List;
  */
 public class WebappLoader implements Loader,LifeCycle{
 
-    private static final String DEFAULT_LOADER_CLASS="container.loader.WebappClassLoader.class";
+    private static final String DEFAULT_LOADER_CLASS="container.loader.WebappClassLoader";
+
+    private static final String CLASS_PATH="webinf"+File.separator+"classes"+File.separator;
+
+    private static final String LIB_PATH="webinf"+File.separator+"lib"+File.separator;
 
     private WebappClassLoader classLoader;
 
@@ -62,7 +70,7 @@ public class WebappLoader implements Loader,LifeCycle{
     }
 
     public List<String> getRepositories() {
-        ((Reloader)classLoader).getRepositories();
+        return ((Reloader)classLoader).getRepositories();
     }
 
     public boolean modified() {
@@ -75,6 +83,15 @@ public class WebappLoader implements Loader,LifeCycle{
 
     public void setDelegate(boolean delegate) {
         this.delegate=delegate;
+    }
+
+    public Class load(String url) {
+        try {
+            return classLoader.loadClass(url);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void addLifeCycleListener(LifeCycleListener listener) {
@@ -90,8 +107,19 @@ public class WebappLoader implements Loader,LifeCycle{
     }
 
     public void start() throws LifeCycleException {
-
-
+        lifeCycle.beforeStart(null);
+        lifeCycle.start(null);
+        try {
+            classLoader=createClassLoader();
+            StandardContext context=(StandardContext)container;
+            String docbase=context.getDocbase();
+            classLoader.addRepository(docbase+ File.separator+CLASS_PATH);
+            classLoader.addRepository(docbase+File.separator+LIB_PATH);
+        } catch (Exception e) {
+            StandardLogger.error("start webappclassloader fail",e);
+            throw new LifeCycleException("start webappclassloader fail");
+        }
+        lifeCycle.afterStart(null);
     }
 
     private WebappClassLoader createClassLoader() throws Exception{

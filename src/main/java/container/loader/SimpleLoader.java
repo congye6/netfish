@@ -22,7 +22,7 @@ public class SimpleLoader implements Loader,LifeCycle{
 
     private LifeCycleUtil lifeCycle=new LifeCycleUtil(this);
 
-    public Servlet load(String uri)  {
+    public Servlet loadServlet(String uri)  {
         File classPath=new File(HttpFormatUtil.WEB_ROOT);
         try {
             URL url=new URL("file",null,classPath.getCanonicalFile()+ File.separator);
@@ -48,6 +48,21 @@ public class SimpleLoader implements Loader,LifeCycle{
         return null;
     }
 
+    public static void main(String[] args){
+        File classPath=new File(HttpFormatUtil.WEB_ROOT);
+        URL url= null;
+        try {
+            System.out.println(classPath.getCanonicalFile());
+            url = new URL("file",null,classPath.getCanonicalFile()+File.separator);
+            URLClassLoader classLoader=new URLClassLoader(new URL[]{url});
+            classLoader.loadClass("CookieServlet");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     public void addLifeCycleListener(LifeCycleListener listener) {
         lifeCycle.addListener(listener);
@@ -107,5 +122,9 @@ public class SimpleLoader implements Loader,LifeCycle{
 
     public void setDelegate(boolean delegate) {
 
+    }
+
+    public Class load(String url) {
+        return null;
     }
 }

@@ -45,6 +45,16 @@ public class StandardContext implements Context,LifeCycle{
 
     private ClassLoader parentClassLoader;
 
+    /**
+     * url上的context路径
+     */
+    private String path;
+
+    /**
+     * context部署的文件路径
+     */
+    private String docbase;
+
     public StandardContext(){
         pipeline=new StandardPipeline();
         pipeline.setBasic(new ContextBasicValve(this));
@@ -52,16 +62,50 @@ public class StandardContext implements Context,LifeCycle{
 
         //todo
         addLifeCycleListener(new StandardContextListener());
-        addChild(new StandardWrapper("uri"));
-        try {
-            start();
-        } catch (LifeCycleException e) {
-            e.printStackTrace();
-        }
+        Wrapper wrapper=new StandardWrapper("CookieServlet");
+        addChild(wrapper);
+        addServletMapping("/servlet/CookieServlet",wrapper);
     }
 
     public void invoke(HttpRequest request, HttpResponse response) {
         pipeline.invoke(request,response);
+    }
+
+    public void start() throws LifeCycleException{
+        if(isStart)
+            throw new LifeCycleException("standard context start");
+        lifeCycle.beforeStart(null);
+        lifeCycle.start(null);
+
+        if(getLoader()!=null){
+            LifeCycle lifeCycle=(LifeCycle)loader;
+            lifeCycle.start();
+        }
+        for(Container child:children){
+            LifeCycle lifeCycle=(LifeCycle)child;
+            child.setLoader(loader);
+            lifeCycle.start();
+        }
+        isStart=true;
+        lifeCycle.afterStart(null);
+    }
+
+    public void stop() throws LifeCycleException{
+        if(!isStart)
+            throw new LifeCycleException("stop context fail,not start");
+        lifeCycle.beforeStop(null);
+        lifeCycle.stop(null);
+
+        if(getLoader()!=null){
+            LifeCycle lifeCycle=(LifeCycle)loader;
+            lifeCycle.stop();
+        }
+        for(Container child:children){
+            LifeCycle lifeCycle=(LifeCycle)child;
+            lifeCycle.stop();
+        }
+        isStart=false;
+        lifeCycle.afterStop(null);
     }
 
     public Container getParent() {
@@ -141,39 +185,19 @@ public class StandardContext implements Context,LifeCycle{
         lifeCycle.removeListener(listener);
     }
 
-    public void start() throws LifeCycleException{
-        if(isStart)
-            throw new LifeCycleException("standard context start");
-        lifeCycle.beforeStart(null);
-        lifeCycle.start(null);
-
-        if(getLoader()!=null){
-            LifeCycle lifeCycle=(LifeCycle)loader;
-            lifeCycle.start();
-        }
-        for(Container child:children){
-            LifeCycle lifeCycle=(LifeCycle)child;
-            lifeCycle.start();
-        }
-        isStart=true;
-        lifeCycle.afterStart(null);
+    public String getPath() {
+        return path;
     }
 
-    public void stop() throws LifeCycleException{
-        if(!isStart)
-            throw new LifeCycleException("stop context fail,not start");
-        lifeCycle.beforeStop(null);
-        lifeCycle.stop(null);
+    public void setPath(String path) {
+        this.path = path;
+    }
 
-        if(getLoader()!=null){
-            LifeCycle lifeCycle=(LifeCycle)loader;
-            lifeCycle.stop();
-        }
-        for(Container child:children){
-            LifeCycle lifeCycle=(LifeCycle)child;
-            lifeCycle.stop();
-        }
-        isStart=false;
-        lifeCycle.afterStop(null);
+    public String getDocbase() {
+        return docbase;
+    }
+
+    public void setDocbase(String docbase) {
+        this.docbase = docbase;
     }
 }

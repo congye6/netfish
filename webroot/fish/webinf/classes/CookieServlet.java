@@ -17,7 +17,7 @@ public class CookieServlet implements Servlet{
     }
 
     public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
-
+        System.out.println("reading cookie");
         HttpServletRequest request=(HttpServletRequest)servletRequest;
         HttpServletResponse response=(HttpServletResponse)servletResponse;
         Cookie[] cookies=request.getCookies();
