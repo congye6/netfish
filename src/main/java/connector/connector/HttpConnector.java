@@ -1,5 +1,11 @@
 package connector.connector;
 
+import container.context.ContextMapper;
+import container.context.StandardContext;
+import container.lifecycle.LifeCycleException;
+import container.loader.WebappLoader;
+import container.session.SessionManager;
+import container.session.StandardSessionManager;
 import logger.StandardLogger;
 
 import java.io.IOException;
@@ -21,6 +27,28 @@ public class HttpConnector implements Runnable{
     private boolean isStop=false;
 
     public void run(){
+
+        StandardContext context=new StandardContext();
+        ContextMapper mapper=new ContextMapper();
+        mapper.setContainer(context);
+        context.setMapper(mapper);
+
+        context.setDocbase("netfish");
+
+        WebappLoader loader=new WebappLoader();
+        loader.setContainer(context);
+        context.setLoader(loader);
+
+        SessionManager sessionManager=new StandardSessionManager();
+        context.setSessionManager(sessionManager);
+        sessionManager.setContainer(context);
+
+        try {
+            context.start();
+        } catch (LifeCycleException e) {
+            e.printStackTrace();
+        }
+
         try {
             if(serverSocket==null)
                 serverSocket=new ServerSocket(PORT);
@@ -28,7 +56,7 @@ public class HttpConnector implements Runnable{
 
             while(!isStop){
                 Socket socket=serverSocket.accept();
-                connectionHandler.connect(socket);
+                connectionHandler.connect(socket,context);
             }
 
         } catch (IOException e) {

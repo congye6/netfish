@@ -5,6 +5,7 @@ import enumeration.Encode;
 import enumeration.ResponseStatus;
 import logger.StandardLogger;
 import util.HttpFormatUtil;
+import util.StringUtil;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
@@ -47,7 +48,14 @@ public class HttpResponse implements HttpServletResponse {
         BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(outputStream));
         responseLine.write(writer);
         responseHeader.addHeader(ResponseHeaderKey.CONTENT_LENGTH,buffer.size()+"");
+        if(StringUtil.isNotEmpty(request.getRequestedSessionId())){
+            Cookie cookie=new Cookie(HttpRequest.COOKIE_SESSION_ID,request.getRequestedSessionId());
+            cookie.setMaxAge(100000);
+            addCookie(cookie);
+        }
+
         responseHeader.addCookie(cookies);
+
         responseHeader.write(writer);
         try {
             writer.write(HttpFormatUtil.LINE_SPLITER);

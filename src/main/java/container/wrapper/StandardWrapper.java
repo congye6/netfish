@@ -44,6 +44,7 @@ public class StandardWrapper implements Wrapper,LifeCycle{
 
 
     public void invoke(HttpRequest request, HttpResponse response) {
+        pipeline.recycle();
         pipeline.invoke(request,response);
     }
 
@@ -89,6 +90,14 @@ public class StandardWrapper implements Wrapper,LifeCycle{
         if(parent!=null&&parent.getLoader()!=null)
             return parent.getLoader();
         return null;
+    }
+
+    public void setPipeline(Pipeline pipeline) {
+        this.pipeline=pipeline;
+    }
+
+    public Pipeline getPipeline() {
+        return pipeline;
     }
 
     public void load() {

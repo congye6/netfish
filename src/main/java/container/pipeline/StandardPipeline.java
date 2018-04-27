@@ -32,4 +32,8 @@ public class StandardPipeline implements Pipeline{
     public List<Valve> getValves() {
         return valveContext.getValves();
     }
+
+    public void recycle() {
+        valveContext.recycle();
+    }
 }

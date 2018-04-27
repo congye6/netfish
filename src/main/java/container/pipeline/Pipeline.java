@@ -27,4 +27,6 @@ public interface Pipeline {
 
     public List<Valve> getValves();
 
+    public void recycle();
+
 }

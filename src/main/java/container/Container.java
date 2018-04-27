@@ -3,6 +3,7 @@ package container;
 import connector.request.HttpRequest;
 import connector.response.HttpResponse;
 import container.loader.Loader;
+import container.pipeline.Pipeline;
 
 import java.util.List;
 
@@ -27,6 +28,9 @@ public interface Container {
     public void setLoader(Loader loader);
     public Loader getLoader();
 
+    public void setPipeline(Pipeline pipeline);
+
+    public Pipeline getPipeline();
 
 
 }

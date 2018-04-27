@@ -1,6 +1,9 @@
 package connector.request;
 
 import connector.cookie.CookieParser;
+import container.context.Context;
+import container.session.Session;
+import container.session.SessionManager;
 import util.StringUtil;
 
 import javax.servlet.*;
@@ -14,7 +17,7 @@ import java.util.*;
  */
 public class HttpRequest implements HttpServletRequest {
 
-    private static final String COOKIE_SESSION_ID="JSESSIONID";
+    public static final String COOKIE_SESSION_ID="JSESSIONID";
 
     private static final String LINE_SPLITER="\r\n";
 
@@ -34,6 +37,12 @@ public class HttpRequest implements HttpServletRequest {
 
     private String requestedSessionId;
 
+    private Context context;
+
+
+    /**
+     ************************************************************************************* request method
+     */
 
     public void buildRequest(InputStream inputStream) {
         this.socketInputStream=new SocketInputStream(inputStream);
@@ -58,6 +67,18 @@ public class HttpRequest implements HttpServletRequest {
         String result=requestLine.toString()+LINE_SPLITER+requestHeader.toString()+LINE_SPLITER+body;
         return result;
     }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    /**
+     ************************************************************************************** httprequest method
+     */
 
     public String getBody(){
         return body;
@@ -308,11 +329,20 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public HttpSession getSession(boolean create) {
-        return null;
+        SessionManager manager=context.getSessionManager();
+        Session session=manager.getSession(requestedSessionId);
+
+        if(session!=null)
+            return session.getSession();
+        if(!create)
+            return null;
+        session=manager.createSession();
+        requestedSessionId=session.getId();
+        return session.getSession();
     }
 
     public HttpSession getSession() {
-        return null;
+        return getSession(true);
     }
 
     public String changeSessionId() {

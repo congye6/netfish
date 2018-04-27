@@ -11,6 +11,9 @@ import container.context.StandardContext;
 import container.lifecycle.LifeCycleException;
 import container.loader.WebappClassLoader;
 import container.loader.WebappLoader;
+import container.pipeline.StandardPipeline;
+import container.session.SessionManager;
+import container.session.StandardSessionManager;
 import container.wrapper.StandardWrapper;
 import enumeration.ResponseStatus;
 import logger.StandardLogger;
@@ -26,11 +29,15 @@ public class ConnectionTask implements Runnable{
 
     private Socket serverSocket;
 
-    public ConnectionTask(Socket serverSocket) {
+    private Context context;
+
+    public ConnectionTask(Socket serverSocket, Context context) {
         this.serverSocket = serverSocket;
+        this.context = context;
     }
 
     public void run() {
+
         try {
             HttpRequest request=new HttpRequest();
             request.buildRequest(serverSocket.getInputStream());
@@ -39,24 +46,7 @@ public class ConnectionTask implements Runnable{
             response.setRequest(request);
 
             if(request.getURI().startsWith("/servlet/")){
-                StandardContext context=new StandardContext();
-
-                ContextMapper mapper=new ContextMapper();
-                mapper.setContainer(context);
-                context.setMapper(mapper);
-
-                context.setDocbase("netfish");
-
-                WebappLoader loader=new WebappLoader();
-                loader.setContainer(context);
-                context.setLoader(loader);
-
-                try {
-                    context.start();
-                } catch (LifeCycleException e) {
-                    e.printStackTrace();
-                }
-
+                request.setContext(context);
                 context.invoke(request,response);
                 response.setResponseLine(new ResponseLine(HttpFormatUtil.HTTP_PROTOCAL, ResponseStatus.OK));
                 response.write();

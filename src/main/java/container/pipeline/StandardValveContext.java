@@ -48,4 +48,10 @@ public class StandardValveContext implements ValveContext{
     public Valve getBasicValve() {
         return basic;
     }
+
+    public void recycle() {
+        currentPointer=0;
+    }
+
+
 }

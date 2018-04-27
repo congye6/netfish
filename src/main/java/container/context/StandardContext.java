@@ -11,6 +11,7 @@ import container.lifecycle.LifeCycleUtil;
 import container.loader.Loader;
 import container.pipeline.Pipeline;
 import container.pipeline.StandardPipeline;
+import container.session.SessionManager;
 import container.wrapper.StandardWrapper;
 import container.wrapper.Wrapper;
 
@@ -55,6 +56,8 @@ public class StandardContext implements Context,LifeCycle{
      */
     private String docbase;
 
+    private SessionManager manager;
+
     public StandardContext(){
         pipeline=new StandardPipeline();
         pipeline.setBasic(new ContextBasicValve(this));
@@ -68,6 +71,7 @@ public class StandardContext implements Context,LifeCycle{
     }
 
     public void invoke(HttpRequest request, HttpResponse response) {
+        pipeline.recycle();
         pipeline.invoke(request,response);
     }
 
@@ -106,6 +110,22 @@ public class StandardContext implements Context,LifeCycle{
         }
         isStart=false;
         lifeCycle.afterStop(null);
+    }
+
+    public Pipeline getPipeline() {
+        return pipeline;
+    }
+
+    public void setPipeline(Pipeline pipeline) {
+        this.pipeline = pipeline;
+    }
+
+    public SessionManager getSessionManager() {
+        return manager;
+    }
+
+    public void setSessionManager(SessionManager manager) {
+        this.manager = manager;
     }
 
     public Container getParent() {
@@ -172,6 +192,7 @@ public class StandardContext implements Context,LifeCycle{
     public Mapper getMapper() {
         return mapper;
     }
+
 
     public void addLifeCycleListener(LifeCycleListener listener) {
         lifeCycle.addListener(listener);
