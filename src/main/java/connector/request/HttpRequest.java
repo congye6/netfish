@@ -4,6 +4,7 @@ import connector.cookie.CookieParser;
 import container.context.Context;
 import container.session.Session;
 import container.session.SessionManager;
+import enumeration.Protocal;
 import util.StringUtil;
 
 import javax.servlet.*;
@@ -20,6 +21,10 @@ public class HttpRequest implements HttpServletRequest {
     public static final String COOKIE_SESSION_ID="JSESSIONID";
 
     private static final String LINE_SPLITER="\r\n";
+
+    private static final String KEEP_ALIVE="keep-alive";
+
+    private static final String KEEP_ALIVE_CLOSE="close";
 
     private RequestLine requestLine;
 
@@ -74,6 +79,16 @@ public class HttpRequest implements HttpServletRequest {
 
     public void setContext(Context context) {
         this.context = context;
+    }
+
+    public boolean isKeepAlive(){
+        String connection=requestHeader.getHeader(RequestHeaderKey.CONNECTION);
+        if(Protocal.HTTP10.isProtocal(requestLine.getProtocal())&&KEEP_ALIVE.equals(connection))
+            return true;
+
+        if(Protocal.HTTP11.isProtocal(requestLine.getProtocal())&&!KEEP_ALIVE_CLOSE.equals(connection))
+            return true;
+        return false;
     }
 
     /**
@@ -387,6 +402,35 @@ public class HttpRequest implements HttpServletRequest {
 
     public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass) throws IOException, ServletException {
         return null;
+    }
+
+    public static void main(String[] args){
+        byte high=7;
+        byte low=-38;
+        short result=0;
+        int cursor=1;
+        int comparator=1;
+        for(int i=0;i<8;i++){
+            int compareResult=low&comparator;
+            if(compareResult==comparator){
+                result=(short)(result|cursor);
+            }
+            cursor=cursor<<1;
+            comparator=comparator<<1;
+        }
+        System.out.println(result);
+        comparator=1;
+        for(int i=0;i<8;i++){
+            int compareResult=high&comparator;
+            if(compareResult==comparator){
+                result=(short)(result|cursor);
+            }
+            cursor=cursor<<1;
+            comparator=comparator<<1;
+        }
+
+        System.out.println(result);
+
     }
 
 

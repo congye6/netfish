@@ -38,24 +38,38 @@ public class ConnectionTask implements Runnable{
 
     public void run() {
 
-        try {
-            HttpRequest request=new HttpRequest();
-            request.buildRequest(serverSocket.getInputStream());
+        boolean keepAlive=true;
 
-            HttpResponse response=new HttpResponse(serverSocket.getOutputStream());
-            response.setRequest(request);
+        while (keepAlive){
+            try {
+                HttpRequest request=new HttpRequest();
+                request.buildRequest(serverSocket.getInputStream());
+                System.out.println(request.toString());
+                HttpResponse response=new HttpResponse(serverSocket.getOutputStream());
+                response.setRequest(request);
 
-            if(request.getURI().startsWith("/servlet/")){
-                request.setContext(context);
-                context.invoke(request,response);
-                response.setResponseLine(new ResponseLine(HttpFormatUtil.HTTP_PROTOCAL, ResponseStatus.OK));
-                response.write();
-            }else{
-                Processor processor=new StaticResourceProcessor();
-                processor.process(request,response);
+                if(request.getURI().startsWith("/servlet/")){
+                    request.setContext(context);
+                    context.invoke(request,response);
+                    response.setResponseLine(new ResponseLine(HttpFormatUtil.HTTP_PROTOCAL, ResponseStatus.OK));
+                    response.write();
+                }else{
+                    Processor processor=new StaticResourceProcessor();
+                    processor.process(request,response);
+                }
+
+                keepAlive=request.isKeepAlive();
+                System.out.println("---------------keep alive="+keepAlive);
+            } catch (IOException e) {
+                StandardLogger.error("net io fail:"+e.getMessage());
             }
-        } catch (IOException e) {
-            StandardLogger.error("net io fail:"+e.getMessage());
+
         }
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            StandardLogger.error("server socket close error",e);
+        }
+
     }
 }

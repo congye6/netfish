@@ -14,7 +14,7 @@ public enum Protocal {
         this.value = value;
     }
 
-    private boolean isProtocal(String value){
+    public boolean isProtocal(String value){
         return this.value.equalsIgnoreCase(value);
     }
 }
