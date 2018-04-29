@@ -27,20 +27,27 @@ import java.net.Socket;
  */
 public class ConnectionTask implements Runnable{
 
+    private static final int DEFAULT_MAX_IDLE=10000;
+
     private Socket serverSocket;
 
     private Context context;
 
+    private boolean keepAlive=true;
+
+    private long lastAliveTime;
+
+    private int maxIdle;
+
     public ConnectionTask(Socket serverSocket, Context context) {
         this.serverSocket = serverSocket;
         this.context = context;
+        maxIdle=DEFAULT_MAX_IDLE;
     }
 
     public void run() {
-
-        boolean keepAlive=true;
-
         while (keepAlive){
+            lastAliveTime=System.currentTimeMillis();
             try {
                 HttpRequest request=new HttpRequest();
                 request.buildRequest(serverSocket.getInputStream());
@@ -62,14 +69,37 @@ public class ConnectionTask implements Runnable{
                 System.out.println("---------------keep alive="+keepAlive);
             } catch (IOException e) {
                 StandardLogger.error("net io fail:"+e.getMessage());
+            } catch (Exception e){
+                StandardLogger.error("excption",e);
             }
 
         }
+        close();
+        System.out.println("---------------------socket finish");
+    }
+
+    private void close(){
+
         try {
             serverSocket.close();
         } catch (IOException e) {
             StandardLogger.error("server socket close error",e);
         }
+    }
 
+    public void setMaxIdle(int maxIdle){
+        this.maxIdle=maxIdle;
+    }
+
+    public boolean checkAlive(){
+        long now=System.currentTimeMillis();
+        System.out.println("check task is alive,idle time:"+(now-lastAliveTime));
+        if(now-lastAliveTime>maxIdle){
+            keepAlive=false;
+            close();
+            return false;
+        }else{
+            return true;
+        }
     }
 }
