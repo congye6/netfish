@@ -15,6 +15,13 @@
             <version>3.1.0</version>
         </dependency>
 
+        <!-- 添加fastjson -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.1.41</version>
+        </dependency>
+
     </dependencies>
 
 

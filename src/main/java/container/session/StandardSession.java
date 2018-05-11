@@ -162,4 +162,20 @@ public class StandardSession implements HttpSession,Session{
     public boolean isNew() {
         return isNew;
     }
+
+    public long getLastAccessTime() {
+        return lastAccessTime;
+    }
+
+    public void setLastAccessTime(long lastAccessTime) {
+        this.lastAccessTime = lastAccessTime;
+    }
+
+    public Map<String, Object> getAttributeMap() {
+        return attributeMap;
+    }
+
+    public void setAttributeMap(Map<String, Object> attributeMap) {
+        this.attributeMap = attributeMap;
+    }
 }

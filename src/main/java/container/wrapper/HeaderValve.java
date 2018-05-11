@@ -10,7 +10,7 @@ import container.pipeline.ValveContext;
  */
 public class HeaderValve implements Valve{
     public void invoke(HttpRequest request, HttpResponse response, ValveContext valveContext) {
-        System.out.println(request.toString());
+//        System.out.println(request.toString());
         valveContext.invokeNext(request,response);
     }
 }
