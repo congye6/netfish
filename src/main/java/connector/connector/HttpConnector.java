@@ -33,8 +33,6 @@ public class HttpConnector implements Runnable{
         mapper.setContainer(context);
         context.setMapper(mapper);
 
-        context.setDocbase("netfish");
-
         WebappLoader loader=new WebappLoader();
         loader.setContainer(context);
         context.setLoader(loader);

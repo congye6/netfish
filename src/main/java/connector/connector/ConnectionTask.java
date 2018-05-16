@@ -27,7 +27,7 @@ import java.net.Socket;
  */
 public class ConnectionTask implements Runnable{
 
-    private static final int DEFAULT_MAX_IDLE=10000;
+    private static final int DEFAULT_MAX_IDLE=100000;
 
     private Socket serverSocket;
 
@@ -51,7 +51,6 @@ public class ConnectionTask implements Runnable{
             try {
                 HttpRequest request=new HttpRequest();
                 request.buildRequest(serverSocket.getInputStream());
-                System.out.println(request.toString());
                 HttpResponse response=new HttpResponse(serverSocket.getOutputStream());
                 response.setRequest(request);
 
@@ -93,7 +92,6 @@ public class ConnectionTask implements Runnable{
 
     public boolean checkAlive(){
         long now=System.currentTimeMillis();
-        System.out.println("check task is alive,idle time:"+(now-lastAliveTime));
         if(now-lastAliveTime>maxIdle){
             keepAlive=false;
             close();

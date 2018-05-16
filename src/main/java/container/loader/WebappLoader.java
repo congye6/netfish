@@ -1,6 +1,7 @@
 package container.loader;
 
 import container.Container;
+import container.context.Context;
 import container.context.StandardContext;
 import container.lifecycle.LifeCycle;
 import container.lifecycle.LifeCycleException;
@@ -35,7 +36,13 @@ public class WebappLoader implements Loader,LifeCycle{
 
     private String loaderClass=DEFAULT_LOADER_CLASS;
 
+    private boolean isStart=false;
+
     private LifeCycleUtil lifeCycle=new LifeCycleUtil(this);
+
+    private static final int DEFAULT_CHECK_INTERVAL=10000;
+
+    private int checkInterval=DEFAULT_CHECK_INTERVAL;
 
     public String getLoaderClass() {
         return loaderClass;
@@ -106,15 +113,28 @@ public class WebappLoader implements Loader,LifeCycle{
         lifeCycle.removeListener(listener);
     }
 
+    public int getCheckInterval() {
+        return checkInterval;
+    }
+
+    public void setCheckInterval(int checkInterval) {
+        this.checkInterval = checkInterval;
+    }
+
     public void start() throws LifeCycleException {
         lifeCycle.beforeStart(null);
         lifeCycle.start(null);
         try {
-            classLoader=createClassLoader();
+            classLoader=createClassLoader();;
             StandardContext context=(StandardContext)container;
+            classLoader.setResources(context.getResources());
             String docbase=context.getDocbase();
             classLoader.addRepository(docbase+ File.separator+CLASS_PATH);
             classLoader.addRepository(docbase+File.separator+LIB_PATH);
+
+            Thread reloadThread=new Thread(new ReloadTask());
+            reloadThread.start();
+            isStart=true;
         } catch (Exception e) {
             StandardLogger.error("start webappclassloader fail",e);
             throw new LifeCycleException("start webappclassloader fail");
@@ -128,6 +148,7 @@ public class WebappLoader implements Loader,LifeCycle{
         if(container!=null)
             parentClassLoader=container.getParentClassLoader();
         if(parentClassLoader==null){
+
             return (WebappClassLoader)clazz.newInstance();
 
         }else{
@@ -139,6 +160,35 @@ public class WebappLoader implements Loader,LifeCycle{
     }
 
     public void stop() throws LifeCycleException {
+        lifeCycle.beforeStop(null);
+        lifeCycle.stop(null);
+        isStart=false;
+        lifeCycle.afterStop(null);
+    }
 
+    private class ReloadTask implements Runnable{
+
+        public void run() {
+            while (isStart){
+                try {
+                    Thread.sleep(getCheckInterval());
+                } catch (InterruptedException e) {
+                    StandardLogger.error("realod class fail",e);
+                }
+                if(!reloadable())
+                    return;
+                if(classLoader.modified()){
+                    Thread thread=new Thread(new ReloadNotifiedTask());
+                    thread.start();
+                }
+            }
+        }
+    }
+
+    private class  ReloadNotifiedTask implements Runnable{
+
+        public void run() {
+            //invoke context
+        }
     }
 }

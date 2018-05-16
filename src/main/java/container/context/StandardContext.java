@@ -14,6 +14,8 @@ import container.pipeline.StandardPipeline;
 import container.session.SessionManager;
 import container.wrapper.StandardWrapper;
 import container.wrapper.Wrapper;
+import webresource.StandardRoot;
+import webresource.WebResourceRoot;
 
 import java.util.*;
 
@@ -58,6 +60,17 @@ public class StandardContext implements Context,LifeCycle{
 
     private SessionManager manager;
 
+    private WebResourceRoot resources;
+
+    @Override
+    public WebResourceRoot getResources() {
+        return resources;
+    }
+
+    public void setResources(WebResourceRoot resources) {
+        this.resources = resources;
+    }
+
     public StandardContext(){
         pipeline=new StandardPipeline();
         pipeline.setBasic(new ContextBasicValve(this));
@@ -68,6 +81,9 @@ public class StandardContext implements Context,LifeCycle{
         Wrapper wrapper=new StandardWrapper("CookieServlet");
         addChild(wrapper);
         addServletMapping("/servlet/CookieServlet",wrapper);
+
+        docbase="/fish";
+        resources=new StandardRoot(this);
     }
 
     public void invoke(HttpRequest request, HttpResponse response) {

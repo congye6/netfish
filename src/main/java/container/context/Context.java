@@ -6,7 +6,7 @@ import container.pipeline.Pipeline;
 import container.session.Session;
 import container.session.SessionManager;
 import container.wrapper.Wrapper;
-
+import webresource.WebResourceRoot;
 
 
 /**
@@ -25,5 +25,9 @@ public interface Context extends Container {
     public SessionManager getSessionManager();
 
     public void setSessionManager(SessionManager manager);
+
+    public String getDocbase();
+
+    public WebResourceRoot getResources();
 
 }

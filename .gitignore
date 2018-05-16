@@ -54,3 +54,5 @@ log
 netfish.iml
 netfish-log-2018-04-19
 *.session
+.idea/compiler.xml
+netfish.iml
