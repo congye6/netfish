@@ -9,7 +9,7 @@ import javax.servlet.Servlet;
  */
 public interface Wrapper extends Container{
 
-    public void load();
+    public Servlet load();
 
     public Servlet allocate();
 

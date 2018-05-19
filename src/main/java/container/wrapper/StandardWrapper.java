@@ -28,15 +28,19 @@ public class StandardWrapper implements Wrapper,LifeCycle{
 
     private Loader loader;
 
-    private String uri;
+    private String servletClazz;
+
+    private Servlet instance;
 
     private LifeCycleUtil lifeCycle=new LifeCycleUtil(this);
+
+    private boolean isSingleThread=false;
 
     public StandardWrapper(String uri) {
         pipeline=new StandardPipeline();
         pipeline.setBasic(new WrapperBasicValve(this));
         pipeline.addValve(new HeaderValve());
-        this.uri=uri;
+        this.servletClazz=uri;
 
         //todo
         addLifeCycleListener(new StandardWrapperListener());
@@ -100,18 +104,36 @@ public class StandardWrapper implements Wrapper,LifeCycle{
         return pipeline;
     }
 
-    public void load() {
-
-    }
-
-    public Servlet allocate() {
-        Class clazz=getLoader().load(uri);
+    public Servlet load() {
+        Class clazz=getLoader().load(servletClazz);
         try {
             return (Servlet)clazz.newInstance();
         } catch (Exception e) {
-            StandardLogger.error("get class of:"+uri,e);
+            StandardLogger.error("get class of:"+servletClazz,e);
         }
         return null;
+    }
+
+    public Servlet allocate() {
+        if(isSingleThread){//是否为stm的servlet
+
+        }else{
+            return getSharedServlet();
+        }
+
+    }
+
+    public Servlet getSharedServlet(){
+
+        if(instance==null){
+            synchronized(this){
+                if(instance==null){
+                    instance=load();
+                }
+            }
+        }
+
+        return instance;
     }
 
     public void addLifeCycleListener(LifeCycleListener listener) {
@@ -136,5 +158,13 @@ public class StandardWrapper implements Wrapper,LifeCycle{
         lifeCycle.beforeStop(null);
         lifeCycle.stop(null);
         lifeCycle.afterStop(null);
+    }
+
+    public boolean isSingleThread() {
+        return isSingleThread;
+    }
+
+    public void setSingleThread(boolean singleThread) {
+        isSingleThread = singleThread;
     }
 }
