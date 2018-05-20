@@ -31,6 +31,7 @@ public class WrapperBasicValve implements Valve{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        wrapper.recycle(servlet);
     }
 
 

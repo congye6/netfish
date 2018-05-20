@@ -57,7 +57,9 @@ public class STMServletPool {
      * @param servlet
      */
     public void recycle(Servlet servlet){
-        pool.offer(servlet);
+        synchronized (pool){
+            pool.offer(servlet);
+        }
     }
 
     private Servlet takeFromQueue(){

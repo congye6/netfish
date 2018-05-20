@@ -14,6 +14,7 @@ import container.pipeline.StandardPipeline;
 import logger.StandardLogger;
 
 import javax.servlet.Servlet;
+import javax.servlet.SingleThreadModel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +32,8 @@ public class StandardWrapper implements Wrapper,LifeCycle{
     private String servletClazz;
 
     private Servlet instance;
+
+    private STMServletPool pool;
 
     private LifeCycleUtil lifeCycle=new LifeCycleUtil(this);
 
@@ -116,11 +119,36 @@ public class StandardWrapper implements Wrapper,LifeCycle{
 
     public Servlet allocate() {
         if(isSingleThread){//是否为stm的servlet
-
+            if(pool==null){
+                synchronized (this){
+                    if(pool==null)
+                        pool=new STMServletPool(this);
+                }
+            }
+            return pool.get();
         }else{
             return getSharedServlet();
         }
 
+    }
+
+    @Override
+    public void recycle(Servlet servlet) {
+        if(canRecycle(servlet)){
+            pool.recycle(servlet);
+        }
+    }
+
+    private boolean canRecycle(Servlet servlet){
+        if(!isSingleThread)
+            return false;
+        if(pool==null)
+            return false;
+        if(servlet==null)
+            return false;
+        if(!servlet.getClass().getName().equals(servletClazz+".class"))
+            return false;
+        return true;
     }
 
     public Servlet getSharedServlet(){

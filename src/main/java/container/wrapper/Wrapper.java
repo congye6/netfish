@@ -9,9 +9,24 @@ import javax.servlet.Servlet;
  */
 public interface Wrapper extends Container{
 
+    /**
+     * 反射加载一个servlet
+     * @return
+     */
     public Servlet load();
 
+    /**
+     * 分配一个servlet
+     * stm servlet从对象池中分配，否则共用一个servlet
+     * @return
+     */
     public Servlet allocate();
+
+    /**
+     * 回收stm servlet
+     * 如果不是stm则不处理
+     */
+    public void recycle(Servlet servlet);
 
 
 }
