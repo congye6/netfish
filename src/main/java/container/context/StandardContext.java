@@ -17,6 +17,7 @@ import container.wrapper.Wrapper;
 import webresource.StandardRoot;
 import webresource.WebResourceRoot;
 
+import javax.servlet.ServletContext;
 import java.util.*;
 
 /**
@@ -65,6 +66,11 @@ public class StandardContext implements Context,LifeCycle{
     @Override
     public WebResourceRoot getResources() {
         return resources;
+    }
+
+    @Override
+    public ServletContext getServletContext() {
+        return null;
     }
 
     public void setResources(WebResourceRoot resources) {

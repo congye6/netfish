@@ -1,8 +1,10 @@
 package container.wrapper;
 
+import com.sun.javafx.collections.MappingChange;
 import connector.request.HttpRequest;
 import connector.response.HttpResponse;
 import container.Container;
+import container.context.Context;
 import container.lifecycle.LifeCycle;
 import container.lifecycle.LifeCycleException;
 import container.lifecycle.LifeCycleListener;
@@ -13,15 +15,14 @@ import container.pipeline.Pipeline;
 import container.pipeline.StandardPipeline;
 import logger.StandardLogger;
 
-import javax.servlet.Servlet;
-import javax.servlet.SingleThreadModel;
-import java.util.ArrayList;
-import java.util.List;
+import javax.servlet.*;
+import java.util.*;
+
 
 /**
  * Created by cong on 2018-04-16.
  */
-public class StandardWrapper implements Wrapper,LifeCycle{
+public class StandardWrapper implements Wrapper,LifeCycle,ServletConfig{
 
     private Pipeline pipeline;
 
@@ -38,6 +39,11 @@ public class StandardWrapper implements Wrapper,LifeCycle{
     private LifeCycleUtil lifeCycle=new LifeCycleUtil(this);
 
     private boolean isSingleThread=false;
+
+    /**
+     * servlet初始化参数
+     */
+    private Map<String,String> paramMap=new HashMap<>();
 
     public StandardWrapper(String uri) {
         pipeline=new StandardPipeline();
@@ -118,6 +124,7 @@ public class StandardWrapper implements Wrapper,LifeCycle{
     }
 
     public Servlet allocate() {
+        Servlet servlet=null;
         if(isSingleThread){//是否为stm的servlet
             if(pool==null){
                 synchronized (this){
@@ -125,11 +132,18 @@ public class StandardWrapper implements Wrapper,LifeCycle{
                         pool=new STMServletPool(this);
                 }
             }
-            return pool.get();
+            servlet=pool.get();
         }else{
-            return getSharedServlet();
+            servlet=getSharedServlet();
         }
 
+        try {
+            servlet.init(new StandardWrapperFacade(this));
+        } catch (ServletException e) {
+            StandardLogger.error("servlet init fail",e);
+        }
+
+        return servlet;
     }
 
     @Override
@@ -194,5 +208,32 @@ public class StandardWrapper implements Wrapper,LifeCycle{
 
     public void setSingleThread(boolean singleThread) {
         isSingleThread = singleThread;
+    }
+
+    public void addParam(String key,String value){
+        paramMap.put(key,value);
+    }
+
+    @Override
+    public String getServletName() {
+        return servletClazz;
+    }
+
+    @Override
+    public ServletContext getServletContext() {
+        if(parent==null)
+            return null;
+        Context context=(Context)parent;
+        return context.getServletContext();
+    }
+
+    @Override
+    public String getInitParameter(String name) {
+        return paramMap.get(name);
+    }
+
+    @Override
+    public Enumeration<String> getInitParameterNames() {
+        return null;
     }
 }

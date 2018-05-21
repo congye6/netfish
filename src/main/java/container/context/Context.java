@@ -8,6 +8,8 @@ import container.session.SessionManager;
 import container.wrapper.Wrapper;
 import webresource.WebResourceRoot;
 
+import javax.servlet.ServletContext;
+
 
 /**
  * Created by cong on 2018-04-17.
@@ -29,5 +31,7 @@ public interface Context extends Container {
     public String getDocbase();
 
     public WebResourceRoot getResources();
+
+    public ServletContext getServletContext();
 
 }

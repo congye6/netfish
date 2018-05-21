@@ -28,5 +28,12 @@ public interface Wrapper extends Container{
      */
     public void recycle(Servlet servlet);
 
+    /**
+     * 添加servlet初始化参数
+     * @param key
+     * @param value
+     */
+    public void addParam(String key,String value);
+
 
 }
