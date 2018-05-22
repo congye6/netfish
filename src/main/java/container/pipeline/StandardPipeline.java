@@ -4,6 +4,7 @@ import connector.request.HttpRequest;
 import connector.response.HttpResponse;
 
 import java.nio.channels.Pipe;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,29 +12,33 @@ import java.util.List;
  */
 public class StandardPipeline implements Pipeline{
 
-    private ValveContext valveContext=new StandardValveContext();
+    private Valve basic;
+
+    private List<Valve> valves=new ArrayList<Valve>();
 
     public void invoke(HttpRequest request, HttpResponse response) {
+        ValveContext valveContext=new StandardValveContext(basic,valves);
         valveContext.invokeNext(request,response);
     }
 
     public void setBasic(Valve basic) {
-        valveContext.setBasicValve(basic);
+        this.basic=basic;
     }
 
     public Valve getBasic() {
-        return valveContext.getBasicValve();
+        return basic
     }
 
     public void addValve(Valve valve) {
-        valveContext.addValve(valve);
+        if(valve!=null)
+            valves.add(valve);
     }
 
     public List<Valve> getValves() {
-        return valveContext.getValves();
+        return new ArrayList<>(valves);
     }
 
     public void recycle() {
-        valveContext.recycle();
+
     }
 }

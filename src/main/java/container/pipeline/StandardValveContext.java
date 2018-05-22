@@ -16,6 +16,11 @@ public class StandardValveContext implements ValveContext{
 
     private List<Valve> valves=new ArrayList<Valve>();
 
+    public StandardValveContext(Valve basic, List<Valve> valves) {
+        this.basic = basic;
+        this.valves = valves;
+    }
+
     /**
      * 指向当前要运行的过滤器
      */
